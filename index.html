@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alagaësia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0b0808;--card:#150e0e;--line:rgba(198,40,40,.32);--red:#d8403a;--gold:#c9a55c;--text:#e6dfd0;--dim:#a39880}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 500px at 50% -120px,#2a0d0d,var(--ink) 70%) fixed;color:var(--text);font:19px/1.55 'Cormorant Garamond',Georgia,serif;min-height:100vh}
+h1,h2,h3,button,.tag{font-family:Cinzel,serif}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(11,8,8,.85);position:sticky;top:0;z-index:5}
+header h1{margin:0 auto 0 0;font-size:22px;color:var(--gold);letter-spacing:2px}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+button{cursor:pointer;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--text);padding:9px 14px;border-radius:8px;font-size:13px;letter-spacing:.5px}
+button:hover,button:focus-visible{border-color:var(--red);outline:none}
+button.on{background:rgba(198,40,40,.35);border-color:var(--red)}
+button.pri{background:linear-gradient(180deg,#d32f2f,#7f1414);border-color:#e53935;color:#fff}
+button.mini{padding:5px 10px;font-size:11px}
+main{max-width:820px;margin:0 auto;padding:22px 16px 60px}
+h2{font-size:26px;margin:0 0 14px;color:var(--gold);font-weight:500}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:0 0 14px}
+.card h3{margin:0 0 6px;font-size:17px;font-weight:500}
+.tag{font-size:11px;padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--dim);margin-left:8px;white-space:nowrap}
+.tag.ativa{color:#ffb74d;border-color:#ffb74d}.tag.concluida{color:#81c784;border-color:#81c784}.tag.falhou{color:#e57373;border-color:#e57373}
+.txt{white-space:pre-wrap;color:var(--text)}.dim{color:var(--dim);font-style:italic}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+form.card{display:grid;gap:8px}
+input,textarea,select{width:100%;background:#080505;border:1px solid var(--line);border-radius:8px;color:var(--text);padding:10px;font:inherit}
+textarea{min-height:90px;resize:vertical}
+label.chk{display:flex;gap:8px;align-items:center;color:var(--dim)}label.chk input{width:auto}
+details>summary{cursor:pointer;list-style:none}details>summary::-webkit-details-marker{display:none}
+.hero{text-align:center;padding:46px 10px 30px}
+.hero h1{font-size:clamp(38px,10vw,68px);margin:0;color:var(--text);text-shadow:0 0 28px rgba(216,64,58,.55);letter-spacing:4px;font-weight:700}
+.hero p{max-width:440px;margin:14px auto 26px;color:var(--dim)}
+.login{min-height:70vh;display:grid;place-items:center}
+#aviso{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:#150808;border:1px solid var(--red);color:#ffb4ab;padding:10px 16px;border-radius:10px;font-size:15px;z-index:20;max-width:92vw;display:none}
+@media(prefers-reduced-motion:no-preference){button{transition:border-color .15s}}
+</style>
+</head>
+<body>
+<div id="app"></div><div id="aviso" role="alert"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let sb, perfil = null, aba = 'inicio';
+const mestre = () => perfil && perfil.papel === 'mestre';
+const data = d => d ? new Date(d + 'T12:00').toLocaleDateString('pt-BR') : '';
+
+function aviso(m) { const a = $('#aviso'); a.textContent = m; a.style.display = 'block'; clearTimeout(aviso.t); aviso.t = setTimeout(() => a.style.display = 'none', 5000); }
+async function q(p) { const { data: d, error } = await p; if (error) { aviso(error.message); return null; } return d; }
+function tela(h) { $('#app').innerHTML = h; }
+
+function init() {
+  const c = window.CONFIG || {};
+  if (!c.SUPABASE_URL || c.SUPABASE_URL.startsWith('COLE')) return tela('<div class="login"><div class="card"><h2>Falta configurar</h2><p>Abra o arquivo <b>config.js</b> e cole a URL e a chave pública do seu projeto no Supabase.</p></div></div>');
+  sb = supabase.createClient(c.SUPABASE_URL, c.SUPABASE_ANON_KEY);
+  sb.auth.onAuthStateChange((_e, s) => setTimeout(() => carregar(s), 0));
+}
+async function carregar(sessao) {
+  if (!sessao) { perfil = null; return telaLogin(); }
+  let r = await sb.from('profiles').select('*').eq('id', sessao.user.id).maybeSingle();
+  if (!r.data) { await new Promise(t => setTimeout(t, 800)); r = await sb.from('profiles').select('*').eq('id', sessao.user.id).maybeSingle(); }
+  perfil = r.data;
+  if (!perfil) return tela('<div class="login"><div class="card"><h2>Não foi possível carregar seu perfil</h2><p>Confira se o schema.sql foi executado no Supabase e tente entrar de novo.</p><button onclick="sb.auth.signOut()">Sair</button></div></div>');
+  if (!perfil.liberado) return tela(`<div class="login"><div class="card" style="text-align:center"><h2>Quase lá, ${esc((perfil.nome || '').split(' ')[0])}</h2><p>Seu acesso ainda não foi liberado. Avise o mestre para liberar o e-mail <b>${esc(perfil.email)}</b>.</p><div class="row" style="justify-content:center"><button onclick="location.reload()">Verificar de novo</button><button onclick="sb.auth.signOut()">Sair</button></div></div></div>`);
+  app();
+}
+function telaLogin() {
+  tela(`<div class="login"><div class="hero"><h1>Alagaësia</h1><p>O diário da campanha: missões, sessões e fichas. Entre com a conta Google que o mestre liberou.</p><button class="pri" onclick="entrar()">Entrar com Google</button></div></div>`);
+}
+function entrar() { sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname } }); }
+
+const abas = () => [['inicio', 'Início'], ['missoes', 'Missões'], ['diario', 'Diário'], ...(mestre() ? [['jogadores', 'Jogadores']] : [])];
+async function app() {
+  const nav = abas().map(a => `<button class="${a[0] === aba ? 'on' : ''}" onclick="ir('${a[0]}')">${a[1]}</button>`).join('');
+  tela(`<header><h1>Alagaësia</h1><nav>${nav}</nav><button class="mini" onclick="sb.auth.signOut()">Sair</button></header><main id="v"></main>`);
+  const v = { inicio: vInicio, missoes: vMissoes, diario: vDiario, jogadores: vJogadores }[aba];
+  $('#v').innerHTML = await v();
+}
+function ir(a) { aba = a; app(); }
+
+async function vInicio() {
+  const m = await q(sb.from('missoes').select('titulo').eq('status', 'ativa')) || [];
+  const s = await q(sb.from('sessoes').select('*').order('data', { ascending: false, nullsFirst: false }).limit(1)) || [];
+  const u = s[0];
+  return `<div class="hero"><h1>Alagaësia</h1><p>Bem-vindo, ${esc((perfil.nome || '').split(' ')[0])}${mestre() ? ' (mestre)' : ''}.</p></div>
+  <div class="card"><h3>Missões ativas</h3>${m.length ? m.map(x => `<div>• ${esc(x.titulo)}</div>`).join('') : '<span class="dim">Nenhuma missão ativa por enquanto.</span>'}</div>
+  <div class="card"><h3>Última sessão</h3>${u ? `<b>${esc(u.titulo)}</b> <span class="dim">${data(u.data)}</span><div class="txt">${esc((u.resumo || '').slice(0, 280))}${(u.resumo || '').length > 280 ? '…' : ''}</div>` : '<span class="dim">Nenhuma sessão registrada ainda.</span>'}</div>`;
+}
+
+const ST = { ativa: 'Ativa', concluida: 'Concluída', falhou: 'Falhou' };
+async function vMissoes() {
+  const d = await q(sb.from('missoes').select('*').order('criado_em', { ascending: false })) || [];
+  const o = { ativa: 0, concluida: 1, falhou: 2 }; d.sort((a, b) => o[a.status] - o[b.status]);
+  const form = mestre() ? `<form class="card" onsubmit="novaMissao(event)"><h3>Nova missão</h3><input name="titulo" required placeholder="Título"><textarea name="descricao" placeholder="Descrição"></textarea><input name="recompensa" placeholder="Recompensa (opcional)"><button class="pri">Adicionar missão</button></form>` : '';
+  return `<h2>Missões</h2>${form}` + (d.length ? d.map(x => `<div class="card"><h3>${esc(x.titulo)}<span class="tag ${x.status}">${ST[x.status]}</span></h3><div class="txt">${esc(x.descricao)}</div>${x.recompensa ? `<div class="dim">Recompensa: ${esc(x.recompensa)}</div>` : ''}${mestre() ? `<div class="row"><button class="mini" onclick="statusMissao(${x.id},'ativa')">Ativa</button><button class="mini" onclick="statusMissao(${x.id},'concluida')">Concluída</button><button class="mini" onclick="statusMissao(${x.id},'falhou')">Falhou</button><button class="mini" onclick="delMissao(${x.id})">Excluir</button></div>` : ''}</div>`).join('') : '<p class="dim">Nenhuma missão registrada.</p>');
+}
+async function novaMissao(e) { e.preventDefault(); const f = new FormData(e.target); if (await q(sb.from('missoes').insert({ titulo: f.get('titulo'), descricao: f.get('descricao'), recompensa: f.get('recompensa') }))!==undefined) app(); }
+async function statusMissao(id, s) { await q(sb.from('missoes').update({ status: s }).eq('id', id)); app(); }
+async function delMissao(id) { if (confirm('Excluir esta missão?')) { await q(sb.from('missoes').delete().eq('id', id)); app(); } }
+
+async function vDiario() {
+  const d = await q(sb.from('sessoes').select('*').order('data', { ascending: false, nullsFirst: false }).order('numero', { ascending: false })) || [];
+  const form = mestre() ? `<form class="card" onsubmit="novaSessao(event)"><h3>Nova sessão</h3><div class="row" style="margin:0"><input name="numero" type="number" placeholder="Nº" style="width:90px"><input name="data" type="date" style="width:170px"></div><input name="titulo" required placeholder="Título da sessão"><textarea name="resumo" placeholder="Resumo do que aconteceu" style="min-height:140px"></textarea><label class="chk"><input type="checkbox" name="publicada"> Publicar para os jogadores</label><button class="pri">Salvar sessão</button></form>` : '';
+  return `<h2>Diário das sessões</h2>${form}` + (d.length ? d.map(x => `<details class="card"><summary><h3 style="display:inline">${x.numero ? x.numero + '. ' : ''}${esc(x.titulo)}</h3>${!x.publicada ? '<span class="tag">Rascunho</span>' : ''} <span class="dim">${data(x.data)}</span></summary><div class="txt" style="margin-top:10px">${esc(x.resumo)}</div>${mestre() ? `<div class="row"><button class="mini" onclick="pubSessao(${x.id},${!x.publicada})">${x.publicada ? 'Despublicar' : 'Publicar'}</button><button class="mini" onclick="delSessao(${x.id})">Excluir</button></div>` : ''}</details>`).join('') : '<p class="dim">Nenhuma sessão publicada ainda.</p>');
+}
+async function novaSessao(e) { e.preventDefault(); const f = new FormData(e.target); await q(sb.from('sessoes').insert({ numero: f.get('numero') || null, data: f.get('data') || null, titulo: f.get('titulo'), resumo: f.get('resumo'), publicada: f.get('publicada') === 'on' })); app(); }
+async function pubSessao(id, v) { await q(sb.from('sessoes').update({ publicada: v }).eq('id', id)); app(); }
+async function delSessao(id) { if (confirm('Excluir esta sessão?')) { await q(sb.from('sessoes').delete().eq('id', id)); app(); } }
+
+async function vJogadores() {
+  const d = await q(sb.from('profiles').select('*').order('criado_em')) || [];
+  return `<h2>Jogadores</h2><p class="dim">Quem entra com o Google aparece aqui. Libere para dar acesso à campanha.</p>` + d.map(x => `<div class="card"><h3>${esc(x.nome)}<span class="tag">${x.papel}</span><span class="tag ${x.liberado ? 'concluida' : 'ativa'}">${x.liberado ? 'Liberado' : 'Aguardando'}</span></h3><div class="dim">${esc(x.email)}</div>${x.id !== perfil.id ? `<div class="row"><button class="mini" onclick="liberar('${x.id}',${!x.liberado})">${x.liberado ? 'Bloquear' : 'Liberar'}</button></div>` : ''}</div>`).join('');
+}
+async function liberar(id, v) { await q(sb.from('profiles').update({ liberado: v }).eq('id', id)); app(); }
+
+init();
+</script>
+</body>
+</html>
