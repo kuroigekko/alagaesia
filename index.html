@@ -42,7 +42,7 @@ details>summary{cursor:pointer;list-style:none}details>summary::-webkit-details-
 </head>
 <body>
 <div id="app"></div><div id="aviso" role="alert"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script src="config.js"></script>
 <script>
 const $ = s => document.querySelector(s);
@@ -75,14 +75,14 @@ function telaLogin() {
 }
 function entrar() { sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname } }); }
 
-const abas = () => [['inicio', 'Início'], ['missoes', 'Missões'], ['diario', 'Diário'], ...(mestre() ? [['jogadores', 'Jogadores']] : [])];
+const abas = () => [['inicio', 'Início'], ['missoes', 'Missões'], ['diario', 'Diário'], ['ficha', 'Minha ficha'], ...(mestre() ? [['jogadores', 'Jogadores']] : [])];
 async function app() {
   const nav = abas().map(a => `<button class="${a[0] === aba ? 'on' : ''}" onclick="ir('${a[0]}')">${a[1]}</button>`).join('');
   tela(`<header><h1>Alagaësia</h1><nav>${nav}</nav><button class="mini" onclick="sb.auth.signOut()">Sair</button></header><main id="v"></main>`);
   const v = { inicio: vInicio, missoes: vMissoes, diario: vDiario, jogadores: vJogadores }[aba];
   $('#v').innerHTML = await v();
 }
-function ir(a) { aba = a; app(); }
+function ir(a) { if (a === 'ficha') { location.href = 'ficha.html'; return; } aba = a; app(); }
 
 async function vInicio() {
   const m = await q(sb.from('missoes').select('titulo').eq('status', 'ativa')) || [];
@@ -113,9 +113,25 @@ async function novaSessao(e) { e.preventDefault(); const f = new FormData(e.targ
 async function pubSessao(id, v) { await q(sb.from('sessoes').update({ publicada: v }).eq('id', id)); app(); }
 async function delSessao(id) { if (confirm('Excluir esta sessão?')) { await q(sb.from('sessoes').delete().eq('id', id)); app(); } }
 
+const _NR={humano:'Humano',elfo:'Elfo',anao:'Anão',urgal:'Urgal',gato:'Gato-Guepardo'};
+const _NC={senhorArmas:'Senhor das Armas',cacadorSombras:'Caçador das Sombras',tecelaoIdioma:'Tecelão do Idioma',cavaleiroDragao:'Cavaleiro de Dragão',inquisidor:'Inquisidor',domador:'Domador de Feras',sentinelaHorizonte:'Sentinela do Horizonte',furiaKull:'Fúria Kull',sombraCorrepta:'Sombra Corrompida',forjadorRunas:'Forjador de Runas',bardoViajante:'Bardo Viajante',curandeiroRunas:'Curandeiro das Runas',alquimistaGuerra:'Alquimista de Guerra',ilusionista:'Ilusionista do Idioma',mongeVazio:'Monge do Vazio'};
+function resumoFicha(v) {
+  let d; try { d = JSON.parse(v); } catch (e) { return ''; }
+  const marcos = [0, 20, 60, 120, 200, 300, 420, 560, 720, 900]; let nv = 1; const xp = parseInt(d.xpTot) || 0;
+  marcos.forEach((m, j) => { if (xp >= m) nv = j + 1; });
+  const n = k => parseInt(d[k]) || 0, rs = d.resumoSessao || null;
+  const pvMax = rs && rs.pvMax ? rs.pvMax : n('atr_vig') * 5 + (nv - 1) * 5 + n('mPV');
+  const peMax = rs && rs.peMax ? rs.peMax : n('atr_vig') + n('atr_von') + (nv - 1) * 2 + n('mPE');
+  const pv = d.pvAt !== undefined && d.pvAt !== '' ? parseInt(d.pvAt) : pvMax, pe = d.peAt !== undefined && d.peAt !== '' ? parseInt(d.peAt) : peMax;
+  const raca = (rs && rs.raca && !/escolha/i.test(rs.raca)) ? rs.raca : (_NR[d.racaAnterior] || 'Sem raça');
+  const classe = (rs && rs.classe && !/escolha/i.test(rs.classe)) ? rs.classe : (_NC[d.classeAnterior] || 'Sem classe');
+  return `<div class="txt" style="margin-top:8px"><b>${esc(d.nome || 'Herói Sem Nome')}</b> · ${esc(raca)} · ${esc(classe)} · nível ${rs && rs.nivel ? rs.nivel : nv}<br><span class="dim">PV ${pv}/${pvMax} · PE ${pe}/${peMax}</span></div>`;
+}
 async function vJogadores() {
   const d = await q(sb.from('profiles').select('*').order('criado_em')) || [];
-  return `<h2>Jogadores</h2><p class="dim">Quem entra com o Google aparece aqui. Libere para dar acesso à campanha.</p>` + d.map(x => `<div class="card"><h3>${esc(x.nome)}<span class="tag">${x.papel}</span><span class="tag ${x.liberado ? 'concluida' : 'ativa'}">${x.liberado ? 'Liberado' : 'Aguardando'}</span></h3><div class="dim">${esc(x.email)}</div>${x.id !== perfil.id ? `<div class="row"><button class="mini" onclick="liberar('${x.id}',${!x.liberado})">${x.liberado ? 'Bloquear' : 'Liberar'}</button></div>` : ''}</div>`).join('');
+  const fs = await q(sb.from('fichas_dados').select('user_id,valor').eq('chave', 'ficha_eragon_auto')) || [];
+  const ficha = {}; fs.forEach(x => ficha[x.user_id] = x.valor);
+  return `<h2>Jogadores</h2><p class="dim">Quem entra com o Google aparece aqui. Libere para dar acesso à campanha. Cada jogador mostra o resumo da ficha que está usando.</p>` + d.map(x => `<div class="card"><h3>${esc(x.nome)}<span class="tag">${x.papel}</span><span class="tag ${x.liberado ? 'concluida' : 'ativa'}">${x.liberado ? 'Liberado' : 'Aguardando'}</span></h3><div class="dim">${esc(x.email)}</div>${ficha[x.id] ? resumoFicha(ficha[x.id]) : '<div class="dim" style="margin-top:6px">Ainda sem ficha.</div>'}${x.id !== perfil.id ? `<div class="row"><button class="mini" onclick="liberar('${x.id}',${!x.liberado})">${x.liberado ? 'Bloquear' : 'Liberar'}</button></div>` : ''}</div>`).join('');
 }
 async function liberar(id, v) { await q(sb.from('profiles').update({ liberado: v }).eq('id', id)); app(); }
 
