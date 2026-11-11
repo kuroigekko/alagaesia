@@ -75,20 +75,37 @@ function telaLogin() {
 }
 function entrar() { sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname } }); }
 
-const abas = () => [['inicio', 'Início'], ['missoes', 'Missões'], ['diario', 'Diário'], ['ficha', 'Minha ficha'], ...(mestre() ? [['jogadores', 'Jogadores']] : [])];
+const abas = () => [['inicio', 'Início'], ['missoes', 'Missões'], ['diario', 'Diário'], ['ficha', 'Minha ficha'], ...(mestre() ? [['escudo', 'Escudo do Mestre'], ['jogadores', 'Jogadores']] : [])];
 async function app() {
   const nav = abas().map(a => `<button class="${a[0] === aba ? 'on' : ''}" onclick="ir('${a[0]}')">${a[1]}</button>`).join('');
   tela(`<header><h1>Alagaësia</h1><nav>${nav}</nav><button class="mini" onclick="sb.auth.signOut()">Sair</button></header><main id="v"></main>`);
   const v = { inicio: vInicio, missoes: vMissoes, diario: vDiario, jogadores: vJogadores }[aba];
   $('#v').innerHTML = await v();
 }
-function ir(a) { if (a === 'ficha') { location.href = 'ficha.html'; return; } aba = a; app(); }
+function ir(a) { if (a === 'ficha' || a === 'escudo') { location.href = a + '.html'; return; } aba = a; app(); }
+
+const NIL = '00000000-0000-0000-0000-000000000000', RESP = { vou: 'Vou', talvez: 'Talvez', nao: 'Não vou' };
+async function cardProxima() {
+  const ps = (await q(sb.from('proxima_sessao').select('*').eq('id', 1)) || [])[0];
+  const pr = await q(sb.from('presencas').select('*').order('nome')) || [];
+  const eu = pr.find(x => x.user_id === perfil.id), quando = ps && ps.quando ? new Date(ps.quando) : null;
+  const cor = r => r === 'vou' ? 'concluida' : r === 'nao' ? 'falhou' : 'ativa';
+  const lista = pr.length ? pr.map(x => `<span class="tag ${cor(x.resposta)}" style="margin:0 6px 6px 0;display:inline-block">${esc(x.nome)}: ${RESP[x.resposta]}</span>`).join('') : '<span class="dim">Ninguém respondeu ainda.</span>';
+  const botoes = quando ? `<div class="row">${Object.keys(RESP).map(k => `<button class="mini ${eu && eu.resposta === k ? 'on' : ''}" onclick="responder('${k}')">${RESP[k]}</button>`).join('')}</div>` : '';
+  const formM = mestre() ? `<form onsubmit="definirSessao(event)" class="row" style="margin-top:14px"><input type="datetime-local" name="quando" required style="width:auto"><input name="nota" placeholder="Local ou recado (opcional)" style="flex:1;min-width:160px"><button class="mini pri">Definir</button>${quando ? '<button type="button" class="mini" onclick="limparSessao()">Limpar</button>' : ''}</form>` : '';
+  const dt = quando ? `<div style="font-size:26px;color:var(--gold);font-family:Cinzel,serif">${quando.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })} · ${quando.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>${ps.nota ? `<div class="dim">${esc(ps.nota)}</div>` : ''}` : '<span class="dim">Ainda não marcada.</span>';
+  return `<div class="card"><h3>Próxima sessão</h3>${dt}${botoes}<div style="margin-top:10px">${lista}</div>${formM}</div>`;
+}
+async function definirSessao(e) { e.preventDefault(); const f = new FormData(e.target); await q(sb.from('presencas').delete().neq('user_id', NIL)); await q(sb.from('proxima_sessao').upsert({ id: 1, quando: new Date(f.get('quando')).toISOString(), nota: f.get('nota') })); app(); }
+async function limparSessao() { await q(sb.from('presencas').delete().neq('user_id', NIL)); await q(sb.from('proxima_sessao').delete().eq('id', 1)); app(); }
+async function responder(r) { await q(sb.from('presencas').upsert({ user_id: perfil.id, nome: (perfil.nome || '').split(' ')[0], resposta: r, atualizado_em: new Date().toISOString() })); app(); }
 
 async function vInicio() {
   const m = await q(sb.from('missoes').select('titulo').eq('status', 'ativa')) || [];
   const s = await q(sb.from('sessoes').select('*').order('data', { ascending: false, nullsFirst: false }).limit(1)) || [];
   const u = s[0];
   return `<div class="hero"><h1>Alagaësia</h1><p>Bem-vindo, ${esc((perfil.nome || '').split(' ')[0])}${mestre() ? ' (mestre)' : ''}.</p></div>
+  ${await cardProxima()}
   <div class="card"><h3>Missões ativas</h3>${m.length ? m.map(x => `<div>• ${esc(x.titulo)}</div>`).join('') : '<span class="dim">Nenhuma missão ativa por enquanto.</span>'}</div>
   <div class="card"><h3>Última sessão</h3>${u ? `<b>${esc(u.titulo)}</b> <span class="dim">${data(u.data)}</span><div class="txt">${esc((u.resumo || '').slice(0, 280))}${(u.resumo || '').length > 280 ? '…' : ''}</div>` : '<span class="dim">Nenhuma sessão registrada ainda.</span>'}</div>`;
 }
