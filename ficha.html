@@ -2672,14 +2672,15 @@ tr.grp-hide { display: none; }
     uid = s.user.id;
     var r = await sb.from('fichas_dados').select('chave,valor').eq('user_id', uid);
     if (r.error) { liberar(); status('Sem conexão com a nuvem', 'err'); return; }
-    var nuvem = {}, local = {}, i, k, mudou = false;
+    var nuvem = {}, local = {}, i, k, mudou = false, recente = false;
+    try { recente = Date.now() - parseInt(sessionStorage.getItem('__sync_reload') || '0', 10) < 60000; } catch (e) {}
     r.data.forEach(function (x) { nuvem[x.chave] = x.valor; });
     for (i = 0; i < REAL.length; i++) { k = REAL.key(i); if (ok(k)) local[k] = REAL.getItem(k); }
     if (Object.keys(nuvem).length) {
-      for (k in nuvem) if (local[k] !== nuvem[k]) { set0.call(REAL, k, nuvem[k]); mudou = true; }
-      for (k in local) if (!(k in nuvem)) { rem0.call(REAL, k); mudou = true; }
+      for (k in nuvem) if (local[k] !== nuvem[k]) { if (recente) fila[k] = local[k]; else { set0.call(REAL, k, nuvem[k]); mudou = true; } }
+      for (k in local) if (!(k in nuvem)) fila[k] = local[k];
     } else { for (k in local) fila[k] = local[k]; }
-    if (mudou) { location.reload(); return; }
+    if (mudou) { try { sessionStorage.setItem('__sync_reload', String(Date.now())); } catch (e) {} location.reload(); return; }
     pronto = true; liberar();
     if (Object.keys(fila).length) flush(); else status('Salvo na nuvem', 'ok');
   }
@@ -13920,7 +13921,7 @@ function mercFmt(cobre) { return (cobre / 100).toFixed(1).replace('.', ',').repl
                 }
                 // Previne overflow horizontal no mobile: garante que o container
                 // não fique mais largo que o viewport após o zoom
-                container.style.maxWidth = (100 / (currentZoom / 100)) + 'vw';
+                container.style.maxWidth = 'min(1100px, ' + (100 / (currentZoom / 100)) + 'vw)';
             }
             // Garante que html/body não tenham zoom residual
             document.documentElement.style.zoom = '';
