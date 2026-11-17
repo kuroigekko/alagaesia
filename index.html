@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0b0808"><link rel="apple-touch-icon" href="img/icone-192.png">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0b0808"><link rel="apple-touch-icon" href="icone-192.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Alagaësia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -199,7 +199,7 @@ async function vInicio() {
     heroi = sec('Status do herói') + (r && hud(r.valor, ps) || '<div class="painel"><span class="dim">Abra “Minha ficha” (menu Meu herói) para criar o personagem. O status aparece aqui.</span></div>');
   }
   const metas = m.length ? m.map(x => `<div class="meta"><div><b>${esc(x.titulo)}</b><span>${esc((x.descricao || '').slice(0, 90))}${(x.descricao || '').length > 90 ? '…' : ''}</span></div></div>`).join('') : '<div class="meta"><span>Nenhuma missão ativa por enquanto.</span></div>';
-  return `<div class="capa-hero"><img src="img/livro/capa.jpg" alt="Capa do livro de Alagaësia" onerror="this.remove()"><div class="capa-txt"><h1>Alagaësia</h1><p class="dim" style="margin:8px 0 0">Bem-vindo, ${esc((perfil.nome || '').split(' ')[0])}${mestre() ? ' (mestre)' : ''}.</p></div></div>
+  return `<div class="capa-hero"><img src="livro-capa.jpg" alt="Capa do livro de Alagaësia" onerror="this.remove()"><div class="capa-txt"><h1>Alagaësia</h1><p class="dim" style="margin:8px 0 0">Bem-vindo, ${esc((perfil.nome || '').split(' ')[0])}${mestre() ? ' (mestre)' : ''}.</p></div></div>
   <div class="seta"><i></i></div>${heroi}${sec('Próxima sessão')}${await cardProxima()}
   ${sec('Objetivos em andamento')}<div class="papel"><span class="fita-r"></span><h3>Missões ativas</h3>${metas}</div>
   ${sec('Última sessão')}<div class="card">${u ? `<b>${esc(u.titulo)}</b> <span class="dim">${data(u.data)}</span><div class="txt">${esc((u.resumo || '').slice(0, 280))}${(u.resumo || '').length > 280 ? '…' : ''}</div>` : '<span class="dim">Nenhuma sessão registrada ainda.</span>'}</div>`;
@@ -264,7 +264,7 @@ async function vLivro() {
   if (capAtual) return vCapitulo();
   const d = await q(sb.from('livro').select('slug,ordem,titulo,resumo,liberado').order('ordem')) || [];
   const imp = mestre() ? `<div class="card"><h3>Importar livro</h3><p class="dim">Envie o arquivo livro.json. Capítulos que já existem são atualizados e mantêm o estado (liberado ou oculto).</p><input type="file" accept=".json" onchange="importarLivro(this)"></div>` : '';
-  const capa = `<div class="livro-capa"><img src="img/livro/capa.jpg" alt="" onerror="this.parentNode.style.display='none'"><div><h2 style="margin:0">Alagaësia</h2><div class="dim">O livro da campanha</div></div></div>`;
+  const capa = `<div class="livro-capa"><img src="livro-capa.jpg" alt="" onerror="this.parentNode.style.display='none'"><div><h2 style="margin:0">Alagaësia</h2><div class="dim">O livro da campanha</div></div></div>`;
   const lista = d.length ? d.map(x => `<div class="card cap" onclick="abrirCap('${x.slug}')"><h3>${x.ordem}. ${esc(x.titulo)}${mestre() ? `<span class="tag ${x.liberado ? 'concluida' : 'falhou'}">${x.liberado ? 'Liberado' : 'Oculto'}</span>` : ''}</h3><div class="dim">${esc(x.resumo)}</div>${mestre() ? `<div class="row"><button class="mini" onclick="event.stopPropagation();liberarCap('${x.slug}',${!x.liberado})">${x.liberado ? 'Ocultar' : 'Liberar'}</button></div>` : ''}</div>`).join('') : '<p class="dim">Nenhum capítulo liberado ainda.</p>';
   return capa + imp + lista;
 }
@@ -436,7 +436,7 @@ async function vMapa() {
   const pins = d.map(x => `<button class="pin ${x.visitado ? 'vis' : ''} ${x.visivel ? '' : 'oc'} ${mapaSel === x.id ? 'sel' : ''}" style="left:${x.x}%;top:${x.y}%" title="${esc(x.nome)}" onclick="event.stopPropagation();mapaAbrir(${x.id})"></button>`).join('');
   const novo = mapaPos ? `<span class="pin novo" style="left:${mapaPos.x}%;top:${mapaPos.y}%"></span>` : '';
   const barra = `<div class="row" style="margin:0 0 10px"><button class="mini ${mapaZoom ? 'on' : ''}" onclick="mapaZoom=!mapaZoom;app()">${mapaZoom ? 'Ajustar à tela' : 'Ampliar mapa'}</button><span class="dim" style="align-self:center;font-size:15px">${m ? 'Toque no mapa para marcar um novo lugar.' : '<span style="color:var(--gold)">●</span> visitado · <span style="color:var(--red)">●</span> conhecido'}</span></div>`;
-  const mapa = `<div class="mapa-wrap"><div class="mapa ${mapaZoom ? 'zoom' : ''}" ${m ? 'onclick="mapaClick(event)"' : ''}><img src="img/mapa.jpg" alt="Mapa de Alagaësia" draggable="false">${pins}${novo}</div></div>`;
+  const mapa = `<div class="mapa-wrap"><div class="mapa ${mapaZoom ? 'zoom' : ''}" ${m ? 'onclick="mapaClick(event)"' : ''}><img src="mapa.jpg" alt="Mapa de Alagaësia" draggable="false">${pins}${novo}</div></div>`;
   const tp = v => TIPOS.map(o => `<option ${o === v ? 'selected' : ''}>${o}</option>`).join('');
   const ficha = (l) => `<form class="card" onsubmit="salvarLugar(event)" style="display:grid;gap:8px"><h3>${l ? 'Editar lugar' : 'Novo lugar'}</h3><input name="nome" required placeholder="Nome do lugar" value="${l ? esc(l.nome) : ''}"><select name="tipo">${tp(l ? l.tipo : 'Cidade')}</select><textarea name="descricao" placeholder="O que o grupo sabe ou vê neste lugar">${l ? esc(l.descricao) : ''}</textarea><label class="chk"><input type="checkbox" name="visivel" ${!l || l.visivel ? 'checked' : ''}> Aparece para os jogadores</label><label class="chk"><input type="checkbox" name="visitado" ${l && l.visitado ? 'checked' : ''}> O grupo já visitou</label><div class="row" style="margin:0"><button class="mini pri">Salvar</button>${l ? '<button type="button" class="mini" onclick="delLugar()">Excluir</button>' : '<button type="button" class="mini" onclick="mapaPos=null;app()">Cancelar</button>'}</div></form>`;
   let painel = '';
@@ -581,7 +581,7 @@ function observarEv() {
   ligar();
 })();
 
-const GAL = [['capa.jpg', 'Capa do livro'], ['p2-1.jpg', 'A Alvorada de Alagaësia'], ['p3-1.jpg', 'A Guerra dos Dragões e o Pacto'], ['p4-1.jpg', 'A chegada dos humanos'], ['p6-1.jpg', 'A Queda dos Treze Renegados'], ['p7-1.jpg', 'Cavaleiro e dragão nas ruínas'], ['p19-1.jpg', 'A coroação do Rei dos Anões'], ['p20-1.jpg', 'Ritos dos Deuses Antigos'], ['p20-2.jpg', 'Os nômades de Hadarac'], ['p21-1.jpg', 'O culto de Helgrind']].map(([f, t]) => ['img/livro/' + f, t]).concat([['img/mapa.jpg', 'Mapa de Alagaësia']]);
+const GAL = [['capa.jpg', 'Capa do livro'], ['p2-1.jpg', 'A Alvorada de Alagaësia'], ['p3-1.jpg', 'A Guerra dos Dragões e o Pacto'], ['p4-1.jpg', 'A chegada dos humanos'], ['p6-1.jpg', 'A Queda dos Treze Renegados'], ['p7-1.jpg', 'Cavaleiro e dragão nas ruínas'], ['p19-1.jpg', 'A coroação do Rei dos Anões'], ['p20-1.jpg', 'Ritos dos Deuses Antigos'], ['p20-2.jpg', 'Os nômades de Hadarac'], ['p21-1.jpg', 'O culto de Helgrind']].map(([f, t]) => ['livro-' + f, t]).concat([['mapa.jpg', 'Mapa de Alagaësia']]);
 async function vGaleria() { return `<h2>Galeria</h2><p class="dim" style="margin:0 0 14px">As ilustrações do livro da campanha. Toque para ampliar.</p><div class="galeria">${GAL.map((g, i) => `<figure class="gal" onclick="zoomImg(${i})"><img loading="lazy" src="${g[0]}" alt="${esc(g[1])}"><figcaption>${esc(g[1])}</figcaption></figure>`).join('')}</div>`; }
 function zoomImg(i) { const d = document.createElement('div'); d.id = 'lb'; d.onclick = () => d.remove(); d.innerHTML = `<img src="${GAL[i][0]}" alt="${esc(GAL[i][1])}"><p>${esc(GAL[i][1])}</p>`; document.body.appendChild(d); }
 addEventListener('keydown', e => { if (e.key === 'Escape') { const l = $('#lb'); if (l) l.remove(); } });

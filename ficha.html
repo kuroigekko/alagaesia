@@ -2669,7 +2669,7 @@ tr.grp-hide { display: none; }
     sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY);
     var s = (await sb.auth.getSession()).data.session;
     if (!s) { location.replace('index.html'); return; }
-    uid = s.user.id;
+    uid = s.user.id; window.__nuvemSb = sb; window.__nuvemUid = uid;
     var r = await sb.from('fichas_dados').select('chave,valor').eq('user_id', uid);
     if (r.error) { liberar(); status('Sem conexão com a nuvem', 'err'); return; }
     var nuvem = {}, local = {}, i, k, mudou = false, recente = false;
@@ -2681,7 +2681,7 @@ tr.grp-hide { display: none; }
       for (k in local) if (!(k in nuvem)) fila[k] = local[k];
     } else { for (k in local) fila[k] = local[k]; }
     if (mudou) { try { sessionStorage.setItem('__sync_reload', String(Date.now())); } catch (e) {} location.reload(); return; }
-    pronto = true; liberar();
+    pronto = true; window.__nuvemPronto = true; liberar();
     if (Object.keys(fila).length) flush(); else status('Salvo na nuvem', 'ok');
   }
   iniciar().catch(function (e) { console.error(e); liberar(); status('Erro na nuvem', 'err'); });
@@ -5959,7 +5959,7 @@ tr.grp-hide { display: none; }
 <!-- ══ TAB 11: MESA DO MESTRE (conexão com o escudo) ══ -->
 <div id="tab11" class="tab-content">
     <h3 style="margin-top:0;">Mesa do Mestre &nbsp;<span id="mesaResumo" style="font-family:'Inter',sans-serif;font-size:12px;color:var(--accent);font-weight:normal;"></span></h3>
-    <p style="font-size:12px;color:#aaa;margin:0 0 8px;">Liga a sua ficha ao Escudo do Mestre pelo servidor local. Abra a ficha pelo endereço que o mestre passar (o endereço e o código da mesa já vêm preenchidos ou o mestre informa). A ficha reconecta sozinha se a rede cair.</p>
+    <p style="font-size:12px;color:#aaa;margin:0 0 8px;">A sua ficha se conecta ao Escudo do Mestre pela nuvem, sozinha, ao abrir. Aqui o mestre altera PV e condições, pede testes e entrega itens e documentos.</p>
     <div class="cal-add" style="margin-top:0;">
         <input type="text" data-mesa="end" placeholder="Endereço do servidor (ex: 192.168.0.10:3000)" style="flex:2;min-width:160px;">
         <input type="text" data-mesa="cod" placeholder="Código da mesa" maxlength="12" style="flex:1;min-width:90px;text-transform:uppercase;">
@@ -14214,6 +14214,44 @@ function mercFmt(cobre) { return (cobre / 100).toFixed(1).replace('.', ',').repl
 </script>
 <script>
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) { window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); }); }
+</script>
+<style>[data-mesa="end"],[data-mesa="cod"]{display:none !important}</style>
+<script>
+/* Conexão com o mestre pela nuvem: imita o WebSocket que a ficha já usa. */
+(function () {
+  window.mesaUrl = function () { return 'nuvem://mesa'; };
+  function NuvemWS() {
+    var me = this; me.readyState = 0; me.onopen = me.onmessage = me.onclose = me.onerror = null;
+    var t0 = Date.now(), w = setInterval(function () {
+      if (me.readyState === 3) return clearInterval(w);
+      if (window.__nuvemPronto) { clearInterval(w); abrir(); } else if (Date.now() - t0 > 20000) { clearInterval(w); me.close(); }
+    }, 300);
+    var sb, uid, key, last = 0, tp = null;
+    async function abrir() {
+      sb = window.__nuvemSb; uid = window.__nuvemUid; key = '__nuvem_last_' + uid;
+      last = parseInt(localStorage.getItem(key) || '-1', 10);
+      if (last < 0) { var r = await sb.from('mensagens').select('id').eq('para', uid).order('id', { ascending: false }).limit(1); last = r.data && r.data[0] ? r.data[0].id : 0; localStorage.setItem(key, String(last)); }
+      me.readyState = 1; if (me.onopen) me.onopen();
+      if (me.onmessage) me.onmessage({ data: JSON.stringify({ s: 'ok', dm: true, online: true }) });
+      tp = setInterval(poll, 2500); poll();
+    }
+    async function poll() {
+      if (me.readyState !== 1) return;
+      var r = await sb.from('mensagens').select('id,m').eq('para', uid).gt('id', last).order('id').limit(50);
+      if (r.error || !r.data) return;
+      r.data.forEach(function (x) { last = x.id; try { if (me.onmessage) me.onmessage({ data: JSON.stringify({ s: 'msg', m: x.m }) }); } catch (e) { console.error(e); } });
+      if (r.data.length) localStorage.setItem(key, String(last));
+    }
+    me.send = function (str) {
+      var o; try { o = JSON.parse(str); } catch (e) { return; }
+      var m = o && o.m; if (!m || m.t === 'hello' || m.t === 'ping' || m.t === 'ficha') return;
+      sb.from('mensagens').insert({ de: uid, para: null, m: m }).then(function (r) { if (r.error) console.error(r.error); });
+    };
+    me.close = function () { clearInterval(tp); me.readyState = 3; if (me.onclose) me.onclose(); };
+  }
+  window.WebSocket = NuvemWS;
+  var t1 = setInterval(function () { if (window.__nuvemPronto && typeof mesaConectar === 'function') { clearInterval(t1); try { mesaConectar(); } catch (e) { console.error(e); } } }, 600);
+})();
 </script>
 </body>
 </html>

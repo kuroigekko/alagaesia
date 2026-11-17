@@ -330,7 +330,7 @@ h1{text-shadow:0 0 24px rgba(198,40,40,0.55)}
     uid = s.user.id;
     var pf = await sb.from('profiles').select('papel,liberado').eq('id', uid).maybeSingle();
     if (!pf.data || pf.data.papel !== 'mestre' || !pf.data.liberado) { location.replace('index.html'); return; }
-    window.__nuvemSb = sb;
+    window.__nuvemSb = sb; window.__nuvemUid = uid;
     var r = await sb.from('fichas_dados').select('chave,valor').eq('user_id', uid);
     if (r.error) { liberar(); status('Sem conexão com a nuvem', 'err'); return; }
     var nuvem = {}, local = {}, i, k, mudou = false, recente = false;
@@ -7711,7 +7711,19 @@ if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) { windo
 </script>
 <script>
 (function () {
-  var vistos = {}, busy = false;
+  var vistos = {}, busy = false, conns = {}, last = null, KEY = '__nuvem_last_dm';
+  function conn(uid, nome) {
+    var c = conns[uid];
+    if (!c) {
+      c = conns[uid] = { id: 'nuvem-' + uid, uid: uid, nome: nome || 'Jogador', estado: 'conectado', jaConectou: true, visto: Date.now(),
+        dc: { readyState: 'open', send: function (str) {
+          var m; try { m = JSON.parse(str); } catch (e) { return; }
+          window.__nuvemSb.from('mensagens').insert({ de: window.__nuvemUid, para: uid, m: m }).then(function (r) { if (r.error) console.error(r.error); });
+        } } };
+      RTC.conns.push(c);
+    }
+    c.visto = Date.now(); c.estado = 'conectado'; return c;
+  }
   async function buscar() {
     var sb = window.__nuvemSb, st = document.getElementById('nuvemFichasSt');
     if (!sb || !window.__nuvemPronto || busy) return; busy = true;
@@ -7719,14 +7731,26 @@ if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) { windo
       var r = await sb.from('fichas_dados').select('user_id,valor,atualizado_em').eq('chave', 'ficha_eragon_auto');
       if (r.error) { if (st) st.textContent = 'Erro ao buscar fichas da nuvem'; return; }
       r.data.forEach(function (x) {
-        if (vistos[x.user_id] === x.atualizado_em) return; vistos[x.user_id] = x.atualizado_em;
-        try { criarCardJogador(JSON.parse(x.valor)); } catch (e) { console.error(e); }
+        if (vistos[x.user_id] === x.atualizado_em) { conn(x.user_id); return; }
+        vistos[x.user_id] = x.atualizado_em;
+        try { var d = JSON.parse(x.valor); rtcAplicarFicha(conn(x.user_id, d.nome), d); } catch (e) { console.error(e); try { criarCardJogador(JSON.parse(x.valor)); } catch (e2) {} }
       });
       if (st) st.textContent = 'Fichas na nuvem: ' + r.data.length + ' · verificado às ' + new Date().toLocaleTimeString('pt-BR');
     } finally { busy = false; }
   }
+  async function msgs() {
+    var sb = window.__nuvemSb; if (!sb || !window.__nuvemPronto) return;
+    if (last === null) {
+      last = parseInt(localStorage.getItem(KEY) || '-1', 10);
+      if (last < 0) { var r0 = await sb.from('mensagens').select('id').is('para', null).order('id', { ascending: false }).limit(1); last = r0.data && r0.data[0] ? r0.data[0].id : 0; localStorage.setItem(KEY, String(last)); }
+    }
+    var r = await sb.from('mensagens').select('id,de,m').is('para', null).gt('id', last).order('id').limit(100);
+    if (r.error || !r.data) return;
+    r.data.forEach(function (x) { last = x.id; try { rtcAoReceber(x.m, conn(x.de)); } catch (e) { console.error(e); } });
+    if (r.data.length) localStorage.setItem(KEY, String(last));
+  }
   window.nuvemFichasBuscar = function () { vistos = {}; return buscar(); };
-  setInterval(buscar, 8000); setTimeout(buscar, 2500);
+  setInterval(buscar, 4000); setInterval(msgs, 2500); setTimeout(buscar, 2500);
 })();
 </script>
 </body>
