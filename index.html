@@ -90,10 +90,12 @@ button:active{transform:translateY(1px) scale(.98)}button{transition:transform .
 .barra b{width:100%;transform:scaleX(var(--p,1));transform-origin:0 50%;animation:encher 1.1s cubic-bezier(.2,.8,.2,1) both}.barra b.baixo{animation:encher 1.1s cubic-bezier(.2,.8,.2,1) both,pulsa 1.8s 1.2s ease-in-out infinite}
 .io .ev{opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s}.io .ev.vis{opacity:1;transform:none}
 .linha-t{border-left:0;position:relative}.linha-t::before{content:'';position:absolute;left:-1px;top:0;bottom:0;width:2px;background:var(--line);transform-origin:top;animation:traca 1.4s ease-out both}
-.perg.abre{animation:desenrola .9s ease-out both}.selo{position:absolute;left:50%;top:-16px;width:48px;height:48px;margin-left:-24px;border-radius:50%;z-index:2;background:radial-gradient(circle at 35% 30%,#e0554f,#7a1d1a 70%);box-shadow:0 3px 10px rgba(0,0,0,.6),inset 0 0 0 4px rgba(0,0,0,.18);animation:quebra 1.5s .55s ease-in forwards}
+.perg-wrap{position:relative;margin:14px 0}.perg-wrap .perg{margin:0}.perg.abre{animation:desenrola 1.2s .85s cubic-bezier(.3,.7,.2,1) both;transform-origin:top}
+.selo{position:absolute;left:50%;top:-8px;width:54px;height:54px;margin-left:-27px;z-index:3;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6));animation:lacre .5s ease-out both}.selo i{position:absolute;top:0;width:50%;height:100%;background:radial-gradient(circle at 70% 30%,#e0554f,#7a1d1a 72%)}
+.selo i:first-child{left:0;border-radius:54px 0 0 54px;animation:racha-e 1.1s .55s ease-in forwards}.selo i:last-child{right:0;border-radius:0 54px 54px 0;animation:racha-d 1.1s .55s ease-in forwards}
 .selo-mini{display:inline-block;width:16px;height:16px;border-radius:50%;margin-left:8px;vertical-align:-2px;background:radial-gradient(circle at 35% 30%,#e0554f,#7a1d1a 70%);box-shadow:0 0 8px rgba(224,85,79,.6)}
 @keyframes subir{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@keyframes encher{from{transform:scaleX(0)}}@keyframes pulsa{50%{opacity:.45}}@keyframes brilho{0%,60%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
-@keyframes traca{from{transform:scaleY(0)}}@keyframes desenrola{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}@keyframes quebra{0%{transform:scale(1)}35%{transform:scale(1.15) rotate(8deg)}100%{transform:scale(1.7) rotate(26deg);opacity:0}}
+@keyframes traca{from{transform:scaleY(0)}}@keyframes desenrola{from{clip-path:inset(0 0 100% 0);transform:perspective(600px) rotateX(-12deg) scaleY(.96)}to{clip-path:inset(0);transform:none}}@keyframes lacre{from{transform:scale(.5);opacity:0}to{transform:none;opacity:1}}@keyframes racha-e{0%{transform:none}25%{transform:translate(-3px,1px) rotate(-6deg)}100%{transform:translate(-26px,60px) rotate(-38deg);opacity:0}}@keyframes racha-d{0%{transform:none}25%{transform:translate(3px,1px) rotate(6deg)}100%{transform:translate(26px,68px) rotate(38deg);opacity:0}}
 
 .capa-hero{display:flex;gap:22px;align-items:center;justify-content:center;flex-wrap:wrap;padding:18px 0 4px;perspective:700px}
 .capa-hero img{width:150px;border-radius:6px;border:2px solid var(--bronze);box-shadow:0 0 0 4px rgba(0,0,0,.4),0 14px 40px rgba(0,0,0,.7),0 0 40px rgba(76,195,255,.18);transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .15s;animation:flutua 6s ease-in-out infinite}
@@ -105,7 +107,11 @@ button:active{transform:translateY(1px) scale(.98)}button{transition:transform .
 .esq{display:grid;gap:12px}.esq i{display:block;height:88px;border-radius:12px;opacity:0;background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.1),rgba(255,255,255,.04));background-size:200% 100%;animation:esqIn .01s .25s both,shimmer 1.5s infinite}.esq i:first-child{height:130px}
 @keyframes flutua{50%{translate:0 -5px}}@keyframes nitida{from{filter:blur(10px);transform:scale(1.08)}}@keyframes esqIn{to{opacity:1}}@keyframes shimmer{to{background-position:-200% 0}}
 @media(max-width:700px){.grupos{position:fixed;left:0;right:0;bottom:0;z-index:8;justify-content:space-around;gap:0;background:rgba(11,8,8,.97);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom))}.grupos button{flex:1;flex-direction:column;gap:3px;font-size:10px;letter-spacing:0;padding:7px 2px;border:0;background:none;border-radius:8px}.grupos button .ic{width:22px;height:22px}.grupos button.on{color:var(--gold);background:rgba(198,40,40,.2)}main{padding-bottom:92px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}#brasas{display:none}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.chip{font-family:Cinzel,serif;font-size:11px;letter-spacing:.5px;padding:4px 10px;border:1px solid #5a4630;background:rgba(255,255,255,.04);color:var(--text);border-radius:3px}.chip.bom{color:#8fcf9a;border-color:#3d6a47}.chip.mal{color:#ff9d92;border-color:#8a2d27;background:rgba(138,45,39,.25)}
+.prog{height:6px;background:rgba(90,60,20,.28);margin-top:6px;border-radius:3px;overflow:hidden}.prog i{display:block;height:100%;background:#8a2d27;transform:scaleX(var(--p,0));transform-origin:0 50%;animation:encher 1s cubic-bezier(.2,.8,.2,1) both}.cont{font-family:Cinzel,serif;color:#2a1d10!important;font-weight:700;white-space:nowrap}
+.fita-r.sec{background:#46607a}.fita-r.pes{background:#4f6a3f}.obj{display:flex;justify-content:space-between;gap:10px;font-size:16px;color:#6b5a3a}.obj em{font-style:normal;font-family:Cinzel,serif;color:#2a1d10;font-weight:700}
+.grupo{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.gcard{margin:0}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}#brasas{display:none}.selo{display:none}}
 @media(prefers-reduced-motion:no-preference){button{transition:border-color .15s}}
 </style>
 </head>
@@ -166,7 +172,10 @@ async function app() {
   tela(`<header><div class="topo"><h1>Alagaësia</h1><button class="mini" onclick="alternarEfeitos()" title="Ligar ou desligar os efeitos" aria-label="Efeitos visuais">✦</button><button class="mini" onclick="sb.auth.signOut()">Sair</button></div>${navHtml()}</header><main id="v"></main>`);
   const v = { inicio: vInicio, livro: vLivro, enciclopedia: vEnciclopedia, npcs: vNpcs, mapa: vMapa, galeria: vGaleria, bau: vBau, tesouro: vTesouro, tempo: vTempo, notas: vNotas, jornal: vJornal, diariolivre: vJornal, missoes: vMissoes, diario: vDiario, jogadores: vJogadores }[aba];
   $('#v').innerHTML = '<div class="esq"><i></i><i></i><i></i></div>';
-  $('#v').innerHTML = await v();
+  let html;
+  try { html = await Promise.race([v(), new Promise((_, no) => setTimeout(() => no(new Error('A página demorou demais para responder.')), 20000))]); }
+  catch (e) { console.error(e); html = `<div class="card"><h3>Não foi possível carregar esta página</h3><p class="dim">${esc((e && e.message) || e)}</p><button class="mini pri" onclick="app()">Tentar de novo</button></div>`; }
+  $('#v').innerHTML = html;
   const ch = [aba, capAtual, encSel, racaSel, npcSel, mapaSel, bauSel, jorId, encAba].join('|'); $('#v').className = ch !== ultimaTela ? 'entra' : ''; ultimaTela = ch; observarEv(); capaParallax();
   if ((aba === 'jornal' || aba === 'diariolivre') && jorId) { jorDesenhar(); if (jorPode() && jorEd) jorFerr(); }
 }
@@ -189,23 +198,46 @@ async function limparSessao() { await q(sb.from('presencas').delete().neq('user_
 async function responder(r) { await q(sb.from('presencas').upsert({ user_id: perfil.id, nome: (perfil.nome || '').split(' ')[0], resposta: r, atualizado_em: new Date().toISOString() })); app(); }
 
 async function vInicio() {
-  const m = await q(sb.from('missoes').select('titulo,descricao').eq('status', 'ativa').order('criado_em', { ascending: false })) || [];
+  const m = await q(sb.from('missoes').select('id,titulo,descricao').eq('status', 'ativa').order('criado_em', { ascending: false })) || [];
+  const ob = await q(sb.from('missao_objetivos').select('missao_id,txt,atual,total').order('ordem')) || [], po = {}; ob.forEach(y => (po[y.missao_id] = po[y.missao_id] || []).push(y));
   const s = await q(sb.from('sessoes').select('*').order('data', { ascending: false, nullsFirst: false }).limit(1)) || [];
   const ps = (await q(sb.from('proxima_sessao').select('*').eq('id', 1)) || [])[0], u = s[0];
   let n = 0; const sec = tit => `<div class="sec"><span class="n">${String(++n).padStart(2, '0')}</span>${tit}</div>`;
-  let heroi = '';
+  let heroi = ''; setTimeout(carregarGrupo, 40);
   if (!mestre()) {
-    const r = (await q(sb.from('fichas_dados').select('valor').eq('user_id', perfil.id).eq('chave', 'ficha_eragon_auto')) || [])[0];
-    heroi = sec('Status do herói') + (r && hud(r.valor, ps) || '<div class="painel"><span class="dim">Abra “Minha ficha” (menu Meu herói) para criar o personagem. O status aparece aqui.</span></div>');
+    heroi = sec('Status do herói') + '<div id="hudSlot"><div class="painel"><span class="dim">Carregando o status do herói…</span></div></div>';
+    setTimeout(() => carregarHeroi(ps), 30);
   }
-  const metas = m.length ? m.map(x => `<div class="meta"><div><b>${esc(x.titulo)}</b><span>${esc((x.descricao || '').slice(0, 90))}${(x.descricao || '').length > 90 ? '…' : ''}</span></div></div>`).join('') : '<div class="meta"><span>Nenhuma missão ativa por enquanto.</span></div>';
+  const metas = m.length ? m.map(x => `<div class="meta"><div style="flex:1"><b>${esc(x.titulo)}</b>${(po[x.id] || []).length ? (po[x.id]).slice(0, 3).map(y => `<div class="obj"><span>${esc(y.txt)}</span><em>${y.atual}/${y.total}</em></div>`).join('') : `<span>${esc((x.descricao || '').slice(0, 90))}${(x.descricao || '').length > 90 ? '…' : ''}</span>`}</div></div>`).join('') : '<div class="meta"><span>Nenhuma missão ativa por enquanto.</span></div>';
   return `<div class="capa-hero"><img src="livro-capa.jpg" alt="Capa do livro de Alagaësia" onerror="this.remove()"><div class="capa-txt"><h1>Alagaësia</h1><p class="dim" style="margin:8px 0 0">Bem-vindo, ${esc((perfil.nome || '').split(' ')[0])}${mestre() ? ' (mestre)' : ''}.</p></div></div>
-  <div class="seta"><i></i></div>${heroi}${sec('Próxima sessão')}${await cardProxima()}
+  <div class="seta"><i></i></div>${heroi}${sec('O grupo')}<div id="grupoSlot" class="grupo"><span class="dim">Carregando o grupo…</span></div>${sec('Próxima sessão')}${await cardProxima()}
   ${sec('Objetivos em andamento')}<div class="papel"><span class="fita-r"></span><h3>Missões ativas</h3>${metas}</div>
   ${sec('Última sessão')}<div class="card">${u ? `<b>${esc(u.titulo)}</b> <span class="dim">${data(u.data)}</span><div class="txt">${esc((u.resumo || '').slice(0, 280))}${(u.resumo || '').length > 280 ? '…' : ''}</div>` : '<span class="dim">Nenhuma sessão registrada ainda.</span>'}</div>`;
 }
+const COND_N = { envenenado: 'Envenenado', sangrando: 'Sangrando', atordoado: 'Atordoado', cego: 'Cego', caido: 'Caído', amedrontado: 'Amedrontado', queimando: 'Queimando', congelado: 'Congelado', embriagado: 'Embriagado', agarrado: 'Agarrado', ensurdecido: 'Ensurdecido', infeccionado: 'Infeccionado', enfeiticado: 'Enfeitiçado', desarmado: 'Desarmado' };
+const condNome = c => { const k = typeof c === 'string' ? c : (c && (c.id || c.n || c.nome)) || ''; return COND_N[k] || (typeof k === 'string' ? k : ''); };
+async function carregarGrupo() {
+  const s = $('#grupoSlot'); if (!s) return;
+  let rs = []; try { const r = await sb.rpc('grupo_status'); if (!r.error) rs = r.data || []; } catch (e) { console.error(e); }
+  const s2 = $('#grupoSlot'); if (!s2) return;
+  const pc = (a, b) => b > 0 ? Math.max(0, Math.min(100, Math.round(a / b * 100))) : 0;
+  s2.innerHTML = rs.length ? rs.map(x => { const cs = (Array.isArray(x.conds) ? x.conds : []).map(condNome).filter(Boolean);
+    return `<div class="card gcard"><b>${esc(x.nome || 'Herói sem nome')}</b><div class="dim" style="font-size:15px">${esc([x.raca && !/escolha/i.test(x.raca) ? x.raca : '', x.classe && !/escolha/i.test(x.classe) ? x.classe : ''].filter(Boolean).join(' · ') || 'Sem classe')} · nív ${x.nivel || 1}</div><div class="barra"><span>PV</span><i><b style="--p:${pc(x.pv, x.pvmax) / 100};background:#c0392b"></b></i><em>${x.pv}/${x.pvmax}</em></div><div class="barra"><span>PE</span><i><b style="--p:${pc(x.pe, x.pemax) / 100};background:#d4a017"></b></i><em>${x.pe}/${x.pemax}</em></div>${cs.length ? `<div class="chips">${cs.map(c => `<span class="chip">${esc(c)}</span>`).join('')}</div>` : ''}</div>`; }).join('') : '<span class="dim">Quando os jogadores criarem fichas, o status do grupo aparece aqui.</span>';
+}
+async function carregarHeroi(ps) {
+  let v = null;
+  try {
+    const r = await sb.rpc('meu_heroi');
+    if (!r.error) v = r.data;
+    else { const x = ((await sb.from('fichas_dados').select('valor').eq('user_id', perfil.id).eq('chave', 'ficha_eragon_auto')).data || [])[0]; v = x && x.valor; }
+  } catch (e) { console.error(e); }
+  const s = $('#hudSlot'); if (!s) return;
+  let h = ''; try { h = v ? hud(v, ps) : ''; } catch (e) { console.error(e); }
+  s.innerHTML = h || '<div class="painel"><span class="dim">Abra “Minha ficha” (menu Meu herói) para criar o personagem. O status aparece aqui.</span></div>';
+}
 function hud(v, ps) {
-  let d; try { d = JSON.parse(v); } catch (e) { return ''; }
+  let d; try { d = typeof v === 'string' ? JSON.parse(v) : v; } catch (e) { return ''; }
+  if (!d) return '';
   const marcos = [0, 20, 60, 120, 200, 300, 420, 560, 720, 900], xp = parseInt(d.xpTot) || 0; let nv = 1; marcos.forEach((x, j) => { if (xp >= x) nv = j + 1; });
   const g = k => parseInt(d[k]) || 0, rs = d.resumoSessao || null;
   const pvMax = rs && rs.pvMax ? rs.pvMax : g('atr_vig') * 5 + (nv - 1) * 5 + g('mPV'), peMax = rs && rs.peMax ? rs.peMax : g('atr_vig') + g('atr_von') + (nv - 1) * 2 + g('mPE');
@@ -213,20 +245,37 @@ function hud(v, ps) {
   const raca = (rs && rs.raca && !/escolha/i.test(rs.raca)) ? rs.raca : (_NR[d.racaAnterior] || 'Sem raça'), classe = (rs && rs.classe && !/escolha/i.test(rs.classe)) ? rs.classe : (_NC[d.classeAnterior] || 'Sem classe');
   const ant = marcos[nv - 1], prox = marcos[nv] !== undefined ? marcos[nv] : ant, pct = (a, b) => b > 0 ? Math.max(0, Math.min(100, Math.round(a / b * 100))) : 100;
   const bar = (r, a, b, cor, tx) => `<div class="barra"><span>${r}</span><i><b class="${r === 'PV' && pct(a, b) <= 25 ? 'baixo' : ''}" style="--p:${pct(a, b) / 100};background:${cor}"></b></i><em>${tx || a + '/' + b}</em></div>`;
+  const cs = ((rs && rs.conds) || []).map(condNome).filter(Boolean); if (rs && rs.exaustao > 0) cs.push('Exausto ' + rs.exaustao);
+  const al = [...(pct(pv, pvMax) <= 25 ? [['mal', 'Ferido gravemente']] : []), ...(pct(pe, peMax) <= 25 && peMax > 0 ? [['mal', 'Energia baixa']] : []), ...cs.map(x => ['', x])];
+  const chips = al.length ? al.map(a => `<span class="chip ${a[0]}">${esc(a[1])}</span>`).join('') : '<span class="chip bom">Em boa forma</span>';
   const q = ps && ps.quando ? new Date(ps.quando) : null;
   const fita = `<div class="fita-data">${q ? `<div><small>${q.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</small><b>${q.getDate()}</b><small>${q.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</small></div>` : '<div><small>Próxima</small><b>—</b><small>sessão</small></div>'}</div>`;
-  return `<div class="hud">${fita}<div class="painel"><div class="hnome">${esc(d.nome || 'Herói sem nome')}</div><div class="dim">${esc(raca)} · ${esc(classe)}</div>${bar('PV', pv, pvMax, '#c0392b')}${bar('PE', pe, peMax, '#d4a017')}${bar('XP', xp - ant, prox - ant, '#4cc3ff', prox === ant ? 'máx.' : xp + '/' + prox)}</div><div class="nivel"><div><small>NÍVEL</small><br><b>${rs && rs.nivel ? rs.nivel : nv}</b></div></div></div>`;
+  return `<div class="hud">${fita}<div class="painel"><div class="hnome">${esc(d.nome || 'Herói sem nome')}</div><div class="dim">${esc(raca)} · ${esc(classe)}</div>${bar('PV', pv, pvMax, '#c0392b')}${bar('PE', pe, peMax, '#d4a017')}${bar('XP', xp - ant, prox - ant, '#4cc3ff', prox === ant ? 'máx.' : xp + '/' + prox)}<div class="chips">${chips}</div></div><div class="nivel"><div><small>NÍVEL</small><br><b>${rs && rs.nivel ? rs.nivel : nv}</b></div></div></div>`;
 }
 const ST = { ativa: 'Ativa', concluida: 'Concluída', falhou: 'Falhou' };
+const TMISS = ['Principal', 'Secundária', 'Pessoal'];
 async function vMissoes() {
   const d = await q(sb.from('missoes').select('*').order('criado_em', { ascending: false })) || [];
-  const o = { ativa: 0, concluida: 1, falhou: 2 }; d.sort((a, b) => o[a.status] - o[b.status]);
-  const form = mestre() ? `<form class="card" onsubmit="novaMissao(event)"><h3>Nova missão</h3><input name="titulo" required placeholder="Título"><textarea name="descricao" placeholder="Descrição"></textarea><input name="recompensa" placeholder="Recompensa (opcional)"><button class="pri">Adicionar missão</button></form>` : '';
-  return `<h2>Missões</h2>${form}` + (d.length ? d.map(x => `<div class="card"><h3>${esc(x.titulo)}<span class="tag ${x.status}">${ST[x.status]}</span></h3><div class="txt">${esc(x.descricao)}</div>${x.recompensa ? `<div class="dim">Recompensa: ${esc(x.recompensa)}</div>` : ''}${mestre() ? `<div class="row"><button class="mini" onclick="statusMissao(${x.id},'ativa')">Ativa</button><button class="mini" onclick="statusMissao(${x.id},'concluida')">Concluída</button><button class="mini" onclick="statusMissao(${x.id},'falhou')">Falhou</button><button class="mini" onclick="delMissao(${x.id})">Excluir</button></div>` : ''}</div>`).join('') : '<p class="dim">Nenhuma missão registrada.</p>');
+  const ob = await q(sb.from('missao_objetivos').select('*').order('ordem')) || [];
+  const por = {}; ob.forEach(o => (por[o.missao_id] = por[o.missao_id] || []).push(o));
+  const ord = { ativa: 0, concluida: 1, falhou: 2 }; d.sort((a, b) => ord[a.status] - ord[b.status]);
+  const m = mestre();
+  const form = m ? `<form class="card" onsubmit="novaMissao(event)" style="display:grid;gap:8px"><h3>Nova missão</h3><input name="titulo" required placeholder="Título"><div class="row" style="margin:0"><select name="tipo" style="width:auto">${TMISS.map(x => `<option>${x}</option>`).join('')}</select><input name="quem" placeholder="Quem deu a missão" style="flex:1;min-width:130px"><input name="local" placeholder="Local" style="flex:1;min-width:110px"></div><textarea name="descricao" placeholder="Descrição"></textarea><input name="recompensa" placeholder="Recompensa (opcional)"><button class="pri">Adicionar missão</button></form>` : '';
+  const card = x => {
+    const os = por[x.id] || [], tot = os.reduce((s, y) => s + y.total, 0), at = os.reduce((s, y) => s + Math.min(y.atual, y.total), 0);
+    const lista = os.map(y => `<div class="meta"><div style="flex:1"><b>${esc(y.txt)}</b>${m && !y.revelado ? '<span class="tag" style="margin-left:6px">Secreto</span>' : ''}<div class="prog"><i style="--p:${y.total ? Math.min(1, y.atual / y.total) : 0}"></i></div></div><span class="cont">${y.atual}/${y.total}</span>${m ? `<span style="display:flex;gap:4px"><button class="mini" onclick="objAdd(${y.id},${y.atual - 1},${y.total})">−</button><button class="mini" onclick="objAdd(${y.id},${y.atual + 1},${y.total})">+</button><button class="mini" onclick="objRev(${y.id},${!y.revelado})">${y.revelado ? 'Ocultar' : 'Revelar'}</button><button class="mini" onclick="objDel(${y.id})">×</button></span>` : ''}</div>`).join('');
+    const cor = x.tipo === 'Secundária' ? ' sec' : x.tipo === 'Pessoal' ? ' pes' : '';
+    return `<div class="papel" style="margin-bottom:18px;${x.status !== 'ativa' ? 'opacity:.8' : ''}"><span class="fita-r${cor}"></span><h3>${esc(x.titulo)}<span class="tag ${x.status}" style="font-family:Cinzel,serif">${ST[x.status]}</span></h3><div style="color:#6b5a3a;font-size:16px">${esc(x.tipo || 'Principal')}${x.quem ? ' · ' + esc(x.quem) : ''}${x.local ? ' · ' + esc(x.local) : ''}</div><div class="txt" style="color:#2a1d10;margin:8px 0">${esc(x.descricao)}</div>${lista}${tot ? `<div class="meta" style="border-top-style:dashed"><b style="font-size:16px">Progresso</b><div class="prog" style="flex:1"><i style="--p:${at / tot}"></i></div><span class="cont">${Math.round(at / tot * 100)}%</span></div>` : ''}${x.recompensa ? `<div style="color:#6b2d1c;margin-top:6px">Recompensa: ${esc(x.recompensa)}</div>` : ''}${m ? `<form onsubmit="objNovo(event,${x.id})" class="row" style="margin-top:10px"><input name="txt" required placeholder="Novo objetivo" style="flex:2;min-width:140px"><input name="total" type="number" min="1" value="1" style="width:68px"><label class="chk" style="color:#6b5a3a"><input type="checkbox" name="rev" checked> visível</label><button class="mini">+ Objetivo</button></form><div class="row"><button class="mini" onclick="statusMissao(${x.id},'ativa')">Ativa</button><button class="mini" onclick="statusMissao(${x.id},'concluida')">Concluída</button><button class="mini" onclick="statusMissao(${x.id},'falhou')">Falhou</button><button class="mini" onclick="delMissao(${x.id})">Excluir</button></div>` : ''}</div>`;
+  };
+  return `<h2>Missões</h2>${form}` + (d.length ? d.map(card).join('') : '<p class="dim">Nenhuma missão registrada.</p>');
 }
-async function novaMissao(e) { e.preventDefault(); const f = new FormData(e.target); if (await q(sb.from('missoes').insert({ titulo: f.get('titulo'), descricao: f.get('descricao'), recompensa: f.get('recompensa') }))!==undefined) app(); }
+async function novaMissao(e) { e.preventDefault(); const f = new FormData(e.target); if (await q(sb.from('missoes').insert({ titulo: f.get('titulo'), descricao: f.get('descricao'), recompensa: f.get('recompensa'), tipo: f.get('tipo'), quem: f.get('quem'), local: f.get('local') })) !== undefined) app(); }
 async function statusMissao(id, s) { await q(sb.from('missoes').update({ status: s }).eq('id', id)); app(); }
 async function delMissao(id) { if (confirm('Excluir esta missão?')) { await q(sb.from('missoes').delete().eq('id', id)); app(); } }
+async function objNovo(e, id) { e.preventDefault(); const f = new FormData(e.target); await q(sb.from('missao_objetivos').insert({ missao_id: id, txt: f.get('txt'), total: Math.max(1, parseInt(f.get('total')) || 1), revelado: f.get('rev') === 'on', ordem: Date.now() % 1000000000 })); app(); }
+async function objAdd(id, v, total) { await q(sb.from('missao_objetivos').update({ atual: Math.max(0, Math.min(total, v)) }).eq('id', id)); app(); }
+async function objRev(id, v) { await q(sb.from('missao_objetivos').update({ revelado: v }).eq('id', id)); app(); }
+async function objDel(id) { await q(sb.from('missao_objetivos').delete().eq('id', id)); app(); }
 
 async function vDiario() {
   const d = await q(sb.from('sessoes').select('*').order('data', { ascending: false, nullsFirst: false }).order('numero', { ascending: false })) || [];
@@ -253,7 +302,8 @@ function resumoFicha(v) {
 }
 async function vJogadores() {
   const d = await q(sb.from('profiles').select('*').order('criado_em')) || [];
-  const fs = await q(sb.from('fichas_dados').select('user_id,valor').eq('chave', 'ficha_eragon_auto')) || [];
+  let fr = await sb.rpc('fichas_grupo'); if (fr.error) fr = await sb.from('fichas_dados').select('user_id,valor').eq('chave', 'ficha_eragon_auto');
+  const fs = fr.data || [];
   const ficha = {}; fs.forEach(x => ficha[x.user_id] = x.valor);
   return `<h2>Jogadores</h2><p class="dim">Quem entra com o Google aparece aqui. Libere para dar acesso à campanha. Cada jogador mostra o resumo da ficha que está usando.</p>` + d.map(x => `<div class="card"><h3>${esc(x.nome)}<span class="tag">${x.papel}</span><span class="tag ${x.liberado ? 'concluida' : 'ativa'}">${x.liberado ? 'Liberado' : 'Aguardando'}</span></h3><div class="dim">${esc(x.email)}</div>${ficha[x.id] ? resumoFicha(ficha[x.id]) : '<div class="dim" style="margin-top:6px">Ainda sem ficha.</div>'}${x.id !== perfil.id ? `<div class="row"><button class="mini" onclick="liberar('${x.id}',${!x.liberado})">${x.liberado ? 'Bloquear' : 'Liberar'}</button></div>` : ''}</div>`).join('');
 }
@@ -473,9 +523,9 @@ async function vBau() {
 async function vPergaminho() {
   const r = (await q(sb.from('pergaminhos').select('*').eq('id', bauSel)) || [])[0];
   if (!r) { bauSel = null; return vBau(); }
-  const novo = !!bauEnt;
+  const novo = !!bauEnt, anim = perAnim && (novo || mestre()); perAnim = false;
   if (bauEnt) { q(sb.from('pergaminho_entregas').update({ lido: true }).eq('id', bauEnt)); bauEnt = null; }
-  const doc = `<div class="perg"><h2>${esc(r.titulo)}</h2><div class="dim">${esc(r.tipo)}</div>${r.imagem ? `<img src="${esc(r.imagem)}" alt="">` : ''}<div class="txt">${esc(r.corpo)}</div></div>`.replace('<div class="perg">', `<div class="perg ${novo ? 'abre' : ''}">${novo ? '<div class="selo"></div>' : ''}`);
+  const doc = `<div class="perg"><h2>${esc(r.titulo)}</h2><div class="dim">${esc(r.tipo)}</div>${r.imagem ? `<img src="${esc(r.imagem)}" alt="">` : ''}<div class="txt">${esc(r.corpo)}</div></div>`.replace('<div class="perg">', `<div class="perg-wrap">${anim ? '<div class="selo"><i></i><i></i></div>' : ''}<div class="perg${anim ? ' abre' : ''}">`) + '</div>';
   let painel = '';
   if (mestre()) {
     const js = (await q(sb.from('profiles').select('id,nome,liberado,papel').eq('papel', 'jogador').eq('liberado', true).order('nome')) || []);
@@ -485,7 +535,8 @@ async function vPergaminho() {
   }
   return `<div class="leitura"><button class="mini" onclick="abrirPerg(null,null)">← ${mestre() ? 'Documentos' : 'Baú'}</button>${doc}${painel}</div>`;
 }
-function abrirPerg(i, e) { bauSel = i; bauEnt = e; app(); window.scrollTo(0, 0); }
+let perAnim = false;
+function abrirPerg(i, e) { perAnim = i !== null; bauSel = i; bauEnt = e; app(); window.scrollTo(0, 0); }
 async function novoPerg(e) {
   e.preventDefault(); const fm = e.target, f = new FormData(fm), file = f.get('img');
   const inserir = async img => { const r = await q(sb.from('pergaminhos').insert({ titulo: f.get('titulo'), tipo: f.get('tipo'), corpo: f.get('corpo'), imagem: img }).select('id')); if (r && r[0]) bauSel = r[0].id; app(); };

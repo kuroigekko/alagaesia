@@ -7728,7 +7728,7 @@ if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) { windo
     var sb = window.__nuvemSb, st = document.getElementById('nuvemFichasSt');
     if (!sb || !window.__nuvemPronto || busy) return; busy = true;
     try {
-      var r = await sb.from('fichas_dados').select('user_id,valor,atualizado_em').eq('chave', 'ficha_eragon_auto');
+      var r = await sb.rpc('fichas_grupo'); if (r.error) r = await sb.from('fichas_dados').select('user_id,valor,atualizado_em').eq('chave', 'ficha_eragon_auto');
       if (r.error) { if (st) st.textContent = 'Erro ao buscar fichas da nuvem'; return; }
       r.data.forEach(function (x) {
         if (vistos[x.user_id] === x.atualizado_em) { conn(x.user_id); return; }
