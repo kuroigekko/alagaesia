@@ -93,7 +93,7 @@ button:active{transform:translateY(1px) scale(.98)}button{transition:transform .
 .perg-wrap{position:relative;margin:14px 0}.perg-wrap .perg{margin:0}.perg.abre{animation:desenrola 1.2s .85s cubic-bezier(.3,.7,.2,1) both;transform-origin:top}
 .selo{position:absolute;left:50%;top:-8px;width:54px;height:54px;margin-left:-27px;z-index:3;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6));animation:lacre .5s ease-out both}.selo i{position:absolute;top:0;width:50%;height:100%;background:radial-gradient(circle at 70% 30%,#e0554f,#7a1d1a 72%)}
 .selo i:first-child{left:0;border-radius:54px 0 0 54px;animation:racha-e 1.1s .55s ease-in forwards}.selo i:last-child{right:0;border-radius:0 54px 54px 0;animation:racha-d 1.1s .55s ease-in forwards}
-.selo-mini{display:inline-block;width:16px;height:16px;border-radius:50%;margin-left:8px;vertical-align:-2px;background:radial-gradient(circle at 35% 30%,#e0554f,#7a1d1a 70%);box-shadow:0 0 8px rgba(224,85,79,.6)}
+svg.selo-mini{width:30px;height:30px;margin-left:8px;vertical-align:-9px;filter:drop-shadow(0 0 6px rgba(224,85,79,.55))}
 @keyframes subir{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@keyframes encher{from{transform:scaleX(0)}}@keyframes pulsa{50%{opacity:.45}}@keyframes brilho{0%,60%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
 @keyframes traca{from{transform:scaleY(0)}}@keyframes desenrola{from{clip-path:inset(0 0 100% 0);transform:perspective(600px) rotateX(-12deg) scaleY(.96)}to{clip-path:inset(0);transform:none}}@keyframes lacre{from{transform:scale(.5);opacity:0}to{transform:none;opacity:1}}@keyframes racha-e{0%{transform:none}25%{transform:translate(-3px,1px) rotate(-6deg)}100%{transform:translate(-26px,60px) rotate(-38deg);opacity:0}}@keyframes racha-d{0%{transform:none}25%{transform:translate(3px,1px) rotate(6deg)}100%{transform:translate(26px,68px) rotate(38deg);opacity:0}}
 
@@ -111,13 +111,27 @@ button:active{transform:translateY(1px) scale(.98)}button{transition:transform .
 .prog{height:6px;background:rgba(90,60,20,.28);margin-top:6px;border-radius:3px;overflow:hidden}.prog i{display:block;height:100%;background:#8a2d27;transform:scaleX(var(--p,0));transform-origin:0 50%;animation:encher 1s cubic-bezier(.2,.8,.2,1) both}.cont{font-family:Cinzel,serif;color:#2a1d10!important;font-weight:700;white-space:nowrap}
 .fita-r.sec{background:#46607a}.fita-r.pes{background:#4f6a3f}.obj{display:flex;justify-content:space-between;gap:10px;font-size:16px;color:#6b5a3a}.obj em{font-style:normal;font-family:Cinzel,serif;color:#2a1d10;font-weight:700}
 .grupo{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.gcard{margin:0}
+
+.scroll{position:relative;max-width:660px;margin:30px auto 10px}
+.scroll .roller{position:relative;height:44px;border-radius:22px;z-index:3;background:linear-gradient(#6f5026,#d2b577 22%,#f4e8c6 48%,#d9c08a 74%,#6a4c22);box-shadow:0 8px 16px rgba(0,0,0,.55),inset 0 0 0 1px rgba(60,35,10,.35)}
+.scroll .roller::before,.scroll .roller::after{content:'';position:absolute;top:-4px;width:20px;height:52px;border-radius:50%;background:radial-gradient(circle at 40% 38%,#9a6a35,#3a2410 80%);box-shadow:0 2px 6px rgba(0,0,0,.6)}.scroll .roller::before{left:-10px}.scroll .roller::after{right:-10px}
+.scroll .folha{height:0;overflow:hidden;margin:0 14px;background:linear-gradient(135deg,#ece0c6,#d8c8a0)}.scroll.aberto .folha{height:auto}
+.scroll .perg{margin:0;border:0;border-radius:0;box-shadow:inset 0 0 50px rgba(90,60,20,.3)}
+.scroll:not(.aberto){cursor:pointer}.scroll .lacre{position:absolute;left:50%;top:50%;width:0;height:0;z-index:5}
+.scroll .fita-v{position:absolute;left:-19px;top:-58px;width:38px;height:116px;background:linear-gradient(90deg,#5c0f0d,#b3261e 35%,#d9453c 50%,#b3261e 65%,#5c0f0d);box-shadow:0 4px 10px rgba(0,0,0,.5);clip-path:polygon(0 0,100% 0,100% 100%,50% 94%,0 100%)}
+.scroll .selo-svg{position:absolute;left:-52px;top:-52px;width:104px;height:104px;overflow:visible;filter:drop-shadow(0 6px 8px rgba(0,0,0,.6))}
+.dica{text-align:center;color:var(--gold);font-family:Cinzel,serif;font-size:13px;letter-spacing:2px;margin:22px 0 0}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}#brasas{display:none}.selo{display:none}}
 @media(prefers-reduced-motion:no-preference){button{transition:border-color .15s}}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="cera" cx="38%" cy="32%" r="78%"><stop offset="0" stop-color="#e2574d"/><stop offset=".55" stop-color="#a3231f"/><stop offset="1" stop-color="#5c0f0d"/></radialGradient><clipPath id="cpE"><rect width="60" height="120"/></clipPath><clipPath id="cpD"><rect x="60" width="60" height="120"/></clipPath><g id="seloArte"><path d="M108.9 60.0 C108.1 65.7 106.5 70.9 104.9 76.3 C103.2 81.8 102.6 88.7 99.0 92.8 C95.5 96.9 88.7 98.1 83.6 100.9 C78.6 103.7 74.1 108.2 68.7 109.5 C63.4 110.7 56.9 109.8 51.5 108.4 C46.1 107.0 41.4 103.6 36.4 100.9 C31.4 98.1 25.1 96.3 21.7 92.2 C18.2 88.0 17.7 81.5 15.8 76.1 C13.9 70.7 10.5 65.4 10.4 60.0 C10.4 54.6 13.4 48.9 15.6 43.8 C17.8 38.8 20.4 34.0 23.7 29.5 C27.0 25.1 30.7 20.6 35.2 17.1 C39.8 13.6 45.5 9.4 51.0 8.7 C56.5 8.0 62.7 11.5 68.3 13.1 C73.8 14.7 79.0 15.9 84.1 18.2 C89.2 20.6 94.7 23.4 98.9 27.3 C103.2 31.3 108.0 36.5 109.7 41.9 C111.3 47.4 109.7 54.3 108.9 60.0 Z" fill="url(#cera)" stroke="#4a0a09" stroke-width="1.2"/>
+<circle cx="60" cy="60" r="40" fill="none" stroke="#5c0f0d" stroke-width="2.2"/><circle cx="60" cy="60" r="37.5" fill="none" stroke="#e8756b" stroke-opacity=".45" stroke-width=".8"/>
+<g transform="translate(60 60) scale(.66) translate(-50 -50)"><g fill="#e8756b" fill-opacity=".55" transform="translate(.8 1.2)"><path d="M14.0 31.6 L14.5 31.8 L15.2 32.0 L15.9 32.2 L16.7 32.4 L17.5 32.6 L18.4 32.8 L19.4 33.0 L20.3 33.2 L21.2 33.3 L22.2 33.4 L23.1 33.5 L23.9 33.6 L24.7 33.7 L25.4 33.8 L26.2 34.0 L27.0 34.2 L27.8 34.4 L28.6 34.6 L29.4 34.9 L30.1 35.1 L30.9 35.4 L31.6 35.7 L32.3 36.0 L33.0 36.3 L33.7 36.7 L34.3 37.0 L34.9 37.5 L35.5 37.9 L36.0 38.4 L36.6 38.9 L37.1 39.4 L37.6 40.0 L38.2 40.6 L38.7 41.3 L39.3 42.0 L39.9 42.8 L40.5 43.6 L41.1 44.4 L41.7 45.2 L42.4 46.1 L43.0 47.0 L43.7 47.9 L44.3 48.7 L44.9 49.5 L45.6 50.3 L46.2 51.2 L46.8 52.1 L47.4 53.0 L48.0 54.0 L48.6 54.9 L49.2 55.8 L49.9 56.8 L50.5 57.7 L51.1 58.7 L51.8 59.7 L52.4 60.6 L53.0 61.5 L53.6 62.4 L54.1 63.3 L54.7 64.2 L55.3 65.2 L55.9 66.2 L56.6 67.2 L57.4 68.1 L58.2 69.0 L59.1 69.9 L60.0 70.9 L60.9 71.8 L61.9 72.7 L63.0 73.5 L64.0 74.4 L65.1 75.2 L66.1 75.9 L67.2 76.5 L68.3 77.2 L69.3 77.8 L70.3 78.3 L71.3 78.8 L72.3 79.3 L73.2 79.8 L74.1 80.3 L74.9 80.7 L75.8 81.1 L76.6 81.5 L77.6 82.0 L78.6 82.4 L79.7 82.8 L80.6 83.1 L81.5 83.4 L82.4 83.6 L83.2 83.9 L83.9 84.1 L84.5 84.2 L85.1 84.4 L85.6 84.6 L85.9 84.7 L86.2 84.8 L86.5 84.8 L86.8 85.0 L87.1 85.2 L87.4 85.6 L87.8 86.0 L88.1 86.4 L88.4 86.9 L88.6 87.4 L88.8 87.9 L89.0 88.3 L89.1 88.8 L89.1 89.2 L89.2 89.5 L89.2 89.8 L89.3 89.9 L89.3 90.0 L89.3 90.2 L89.2 90.5 L88.9 90.8 L88.6 91.1 L88.3 91.5 L87.9 91.8 L87.4 92.1 L87.0 92.4 L86.5 92.6 L86.1 92.8 L85.7 93.0 L85.4 93.1 L85.2 93.2 L85.0 93.3 L84.7 93.3 L84.4 93.1 L83.9 92.9 L83.4 92.7 L82.9 92.3 L82.4 91.9 L81.9 91.5 L81.4 91.1 L80.9 90.7 L80.5 90.4 L80.0 90.1 L79.7 89.8 L79.3 89.6 L78.7 90.4 L78.8 90.6 L79.0 91.0 L79.3 91.4 L79.6 91.9 L79.9 92.4 L80.3 93.0 L80.7 93.6 L81.2 94.1 L81.7 94.7 L82.2 95.2 L82.7 95.7 L83.3 96.2 L84.0 96.5 L84.8 96.8 L85.6 96.9 L86.3 96.9 L87.1 96.8 L87.8 96.7 L88.6 96.5 L89.4 96.2 L90.1 96.0 L90.9 95.6 L91.6 95.2 L92.3 94.8 L93.0 94.2 L93.6 93.6 L94.2 92.9 L94.7 92.1 L95.1 91.2 L95.3 90.4 L95.5 89.5 L95.6 88.6 L95.6 87.7 L95.6 86.8 L95.5 85.9 L95.4 85.0 L95.3 84.0 L95.1 83.0 L94.8 82.1 L94.5 81.1 L94.0 80.1 L93.5 79.2 L92.8 78.2 L92.1 77.3 L91.3 76.5 L90.5 75.8 L89.7 75.2 L88.9 74.6 L88.1 74.0 L87.3 73.5 L86.6 73.0 L85.9 72.5 L85.2 72.0 L84.6 71.5 L84.0 71.0 L83.4 70.5 L82.6 69.9 L81.8 69.3 L81.0 68.7 L80.1 68.1 L79.3 67.6 L78.5 67.0 L77.7 66.4 L76.9 65.9 L76.2 65.3 L75.5 64.7 L74.8 64.2 L74.2 63.6 L73.6 63.0 L73.0 62.5 L72.5 61.9 L72.0 61.2 L71.5 60.5 L70.9 59.8 L70.3 59.0 L69.8 58.2 L69.2 57.3 L68.4 56.5 L67.7 55.7 L66.9 54.9 L66.1 54.0 L65.3 53.1 L64.4 52.3 L63.6 51.4 L62.8 50.6 L62.0 49.8 L61.2 49.0 L60.4 48.2 L59.6 47.4 L58.8 46.6 L58.0 45.8 L57.2 45.0 L56.4 44.2 L55.6 43.3 L54.7 42.5 L53.9 41.7 L53.1 40.9 L52.3 40.1 L51.5 39.4 L50.8 38.7 L50.1 38.0 L49.3 37.2 L48.5 36.5 L47.7 35.7 L46.9 35.0 L46.1 34.2 L45.3 33.5 L44.4 32.7 L43.5 32.0 L42.5 31.3 L41.5 30.7 L40.5 30.1 L39.5 29.6 L38.4 29.1 L37.4 28.7 L36.4 28.3 L35.4 27.9 L34.4 27.6 L33.4 27.4 L32.4 27.1 L31.4 26.9 L30.4 26.7 L29.4 26.6 L28.5 26.4 L27.5 26.3 L26.6 26.2 L25.6 26.1 L24.5 26.0 L23.4 26.0 L22.3 26.0 L21.2 26.1 L20.1 26.2 L19.1 26.5 L18.2 26.8 L17.3 27.0 L16.4 27.3 L15.6 27.6 L15.0 27.9 L14.4 28.2 L14.0 28.4Z"/><path d="M6 31 L14 24 L27 22 L35 25 L36 33 L27 36 L19 36 L15 40 L12 35 Z"/><path d="M30 23 C34 14 42 8 52 7 C46 11 42 15 40 24 Z M35 25 C40 19 48 16 58 17 C52 20 47 23 44 29 Z"/><path d="M47 42 C48 30 54 18 62 8 C62 15 66 18 72 19 C70 24 75 27 82 30 C78 34 80 39 86 43 C78 44 72 48 70 56 C64 50 58 52 54 58 Z"/><path d="M52 54 C52 62 50 68 44 72 L38 70 L43 66 C46 62 46 58 46 54 Z"/><path d="M68 66 C70 74 68 80 62 84 L56 83 L62 79 C64 75 63 71 62 67 Z"/></g><g fill="#3f0908"><path d="M14.0 31.6 L14.5 31.8 L15.2 32.0 L15.9 32.2 L16.7 32.4 L17.5 32.6 L18.4 32.8 L19.4 33.0 L20.3 33.2 L21.2 33.3 L22.2 33.4 L23.1 33.5 L23.9 33.6 L24.7 33.7 L25.4 33.8 L26.2 34.0 L27.0 34.2 L27.8 34.4 L28.6 34.6 L29.4 34.9 L30.1 35.1 L30.9 35.4 L31.6 35.7 L32.3 36.0 L33.0 36.3 L33.7 36.7 L34.3 37.0 L34.9 37.5 L35.5 37.9 L36.0 38.4 L36.6 38.9 L37.1 39.4 L37.6 40.0 L38.2 40.6 L38.7 41.3 L39.3 42.0 L39.9 42.8 L40.5 43.6 L41.1 44.4 L41.7 45.2 L42.4 46.1 L43.0 47.0 L43.7 47.9 L44.3 48.7 L44.9 49.5 L45.6 50.3 L46.2 51.2 L46.8 52.1 L47.4 53.0 L48.0 54.0 L48.6 54.9 L49.2 55.8 L49.9 56.8 L50.5 57.7 L51.1 58.7 L51.8 59.7 L52.4 60.6 L53.0 61.5 L53.6 62.4 L54.1 63.3 L54.7 64.2 L55.3 65.2 L55.9 66.2 L56.6 67.2 L57.4 68.1 L58.2 69.0 L59.1 69.9 L60.0 70.9 L60.9 71.8 L61.9 72.7 L63.0 73.5 L64.0 74.4 L65.1 75.2 L66.1 75.9 L67.2 76.5 L68.3 77.2 L69.3 77.8 L70.3 78.3 L71.3 78.8 L72.3 79.3 L73.2 79.8 L74.1 80.3 L74.9 80.7 L75.8 81.1 L76.6 81.5 L77.6 82.0 L78.6 82.4 L79.7 82.8 L80.6 83.1 L81.5 83.4 L82.4 83.6 L83.2 83.9 L83.9 84.1 L84.5 84.2 L85.1 84.4 L85.6 84.6 L85.9 84.7 L86.2 84.8 L86.5 84.8 L86.8 85.0 L87.1 85.2 L87.4 85.6 L87.8 86.0 L88.1 86.4 L88.4 86.9 L88.6 87.4 L88.8 87.9 L89.0 88.3 L89.1 88.8 L89.1 89.2 L89.2 89.5 L89.2 89.8 L89.3 89.9 L89.3 90.0 L89.3 90.2 L89.2 90.5 L88.9 90.8 L88.6 91.1 L88.3 91.5 L87.9 91.8 L87.4 92.1 L87.0 92.4 L86.5 92.6 L86.1 92.8 L85.7 93.0 L85.4 93.1 L85.2 93.2 L85.0 93.3 L84.7 93.3 L84.4 93.1 L83.9 92.9 L83.4 92.7 L82.9 92.3 L82.4 91.9 L81.9 91.5 L81.4 91.1 L80.9 90.7 L80.5 90.4 L80.0 90.1 L79.7 89.8 L79.3 89.6 L78.7 90.4 L78.8 90.6 L79.0 91.0 L79.3 91.4 L79.6 91.9 L79.9 92.4 L80.3 93.0 L80.7 93.6 L81.2 94.1 L81.7 94.7 L82.2 95.2 L82.7 95.7 L83.3 96.2 L84.0 96.5 L84.8 96.8 L85.6 96.9 L86.3 96.9 L87.1 96.8 L87.8 96.7 L88.6 96.5 L89.4 96.2 L90.1 96.0 L90.9 95.6 L91.6 95.2 L92.3 94.8 L93.0 94.2 L93.6 93.6 L94.2 92.9 L94.7 92.1 L95.1 91.2 L95.3 90.4 L95.5 89.5 L95.6 88.6 L95.6 87.7 L95.6 86.8 L95.5 85.9 L95.4 85.0 L95.3 84.0 L95.1 83.0 L94.8 82.1 L94.5 81.1 L94.0 80.1 L93.5 79.2 L92.8 78.2 L92.1 77.3 L91.3 76.5 L90.5 75.8 L89.7 75.2 L88.9 74.6 L88.1 74.0 L87.3 73.5 L86.6 73.0 L85.9 72.5 L85.2 72.0 L84.6 71.5 L84.0 71.0 L83.4 70.5 L82.6 69.9 L81.8 69.3 L81.0 68.7 L80.1 68.1 L79.3 67.6 L78.5 67.0 L77.7 66.4 L76.9 65.9 L76.2 65.3 L75.5 64.7 L74.8 64.2 L74.2 63.6 L73.6 63.0 L73.0 62.5 L72.5 61.9 L72.0 61.2 L71.5 60.5 L70.9 59.8 L70.3 59.0 L69.8 58.2 L69.2 57.3 L68.4 56.5 L67.7 55.7 L66.9 54.9 L66.1 54.0 L65.3 53.1 L64.4 52.3 L63.6 51.4 L62.8 50.6 L62.0 49.8 L61.2 49.0 L60.4 48.2 L59.6 47.4 L58.8 46.6 L58.0 45.8 L57.2 45.0 L56.4 44.2 L55.6 43.3 L54.7 42.5 L53.9 41.7 L53.1 40.9 L52.3 40.1 L51.5 39.4 L50.8 38.7 L50.1 38.0 L49.3 37.2 L48.5 36.5 L47.7 35.7 L46.9 35.0 L46.1 34.2 L45.3 33.5 L44.4 32.7 L43.5 32.0 L42.5 31.3 L41.5 30.7 L40.5 30.1 L39.5 29.6 L38.4 29.1 L37.4 28.7 L36.4 28.3 L35.4 27.9 L34.4 27.6 L33.4 27.4 L32.4 27.1 L31.4 26.9 L30.4 26.7 L29.4 26.6 L28.5 26.4 L27.5 26.3 L26.6 26.2 L25.6 26.1 L24.5 26.0 L23.4 26.0 L22.3 26.0 L21.2 26.1 L20.1 26.2 L19.1 26.5 L18.2 26.8 L17.3 27.0 L16.4 27.3 L15.6 27.6 L15.0 27.9 L14.4 28.2 L14.0 28.4Z"/><path d="M6 31 L14 24 L27 22 L35 25 L36 33 L27 36 L19 36 L15 40 L12 35 Z"/><path d="M30 23 C34 14 42 8 52 7 C46 11 42 15 40 24 Z M35 25 C40 19 48 16 58 17 C52 20 47 23 44 29 Z"/><path d="M47 42 C48 30 54 18 62 8 C62 15 66 18 72 19 C70 24 75 27 82 30 C78 34 80 39 86 43 C78 44 72 48 70 56 C64 50 58 52 54 58 Z"/><path d="M52 54 C52 62 50 68 44 72 L38 70 L43 66 C46 62 46 58 46 54 Z"/><path d="M68 66 C70 74 68 80 62 84 L56 83 L62 79 C64 75 63 71 62 67 Z"/></g><circle cx="25" cy="29.2" r="1.5" fill="#f0a39a"/></g></g></defs></svg>
 <div id="app"></div><div id="aviso" role="alert"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="gsap.min.js"></script>
 <script src="config.js"></script>
 <script>
 const $ = s => document.querySelector(s);
@@ -176,7 +190,8 @@ async function app() {
   try { html = await Promise.race([v(), new Promise((_, no) => setTimeout(() => no(new Error('A página demorou demais para responder.')), 20000))]); }
   catch (e) { console.error(e); html = `<div class="card"><h3>Não foi possível carregar esta página</h3><p class="dim">${esc((e && e.message) || e)}</p><button class="mini pri" onclick="app()">Tentar de novo</button></div>`; }
   $('#v').innerHTML = html;
-  const ch = [aba, capAtual, encSel, racaSel, npcSel, mapaSel, bauSel, jorId, encAba].join('|'); $('#v').className = ch !== ultimaTela ? 'entra' : ''; ultimaTela = ch; observarEv(); capaParallax();
+  const ch = [aba, capAtual, encSel, racaSel, npcSel, mapaSel, bauSel, jorId, encAba].join('|'); $('#v').className = ch !== ultimaTela ? 'entra' : ''; ultimaTela = ch; observarEv(); capaParallax(); scrollInit();
+  if (aba === 'inicio') { carregarGrupo(); if (!mestre()) carregarHeroi(window.__ps); }
   if ((aba === 'jornal' || aba === 'diariolivre') && jorId) { jorDesenhar(); if (jorPode() && jorEd) jorFerr(); }
 }
 function ir(a) { if (a === 'ficha' || a === 'escudo') { location.href = a + '.html'; return; } aba = a; capAtual = null; encSel = null; racaSel = null; bauSel = null; npcSel = null; mapaSel = null; mapaPos = null; jorId = null; jorEd = false; jorSel = null; jorTab = a === 'diariolivre' ? 'diarios' : 'jornais'; app(); }
@@ -203,10 +218,9 @@ async function vInicio() {
   const s = await q(sb.from('sessoes').select('*').order('data', { ascending: false, nullsFirst: false }).limit(1)) || [];
   const ps = (await q(sb.from('proxima_sessao').select('*').eq('id', 1)) || [])[0], u = s[0];
   let n = 0; const sec = tit => `<div class="sec"><span class="n">${String(++n).padStart(2, '0')}</span>${tit}</div>`;
-  let heroi = ''; setTimeout(carregarGrupo, 40);
+  let heroi = ''; window.__ps = ps;
   if (!mestre()) {
     heroi = sec('Status do herói') + '<div id="hudSlot"><div class="painel"><span class="dim">Carregando o status do herói…</span></div></div>';
-    setTimeout(() => carregarHeroi(ps), 30);
   }
   const metas = m.length ? m.map(x => `<div class="meta"><div style="flex:1"><b>${esc(x.titulo)}</b>${(po[x.id] || []).length ? (po[x.id]).slice(0, 3).map(y => `<div class="obj"><span>${esc(y.txt)}</span><em>${y.atual}/${y.total}</em></div>`).join('') : `<span>${esc((x.descricao || '').slice(0, 90))}${(x.descricao || '').length > 90 ? '…' : ''}</span>`}</div></div>`).join('') : '<div class="meta"><span>Nenhuma missão ativa por enquanto.</span></div>';
   return `<div class="capa-hero"><img src="livro-capa.jpg" alt="Capa do livro de Alagaësia" onerror="this.remove()"><div class="capa-txt"><h1>Alagaësia</h1><p class="dim" style="margin:8px 0 0">Bem-vindo, ${esc((perfil.nome || '').split(' ')[0])}${mestre() ? ' (mestre)' : ''}.</p></div></div>
@@ -512,7 +526,7 @@ async function vBau() {
   if (bauSel) return vPergaminho();
   if (!mestre()) {
     const d = await q(sb.from('pergaminho_entregas').select('id,lido,entregue_em,pergaminhos(id,titulo,tipo)').order('entregue_em', { ascending: false })) || [];
-    return `<h2>Baú</h2><p class="dim">Cartas, pergaminhos e pistas que o mestre entregou ao seu personagem.</p>` + (d.length ? d.map(x => `<div class="card cap" onclick="abrirPerg(${x.pergaminhos.id},${x.id})"><h3>${esc(x.pergaminhos.titulo)}<span class="tag">${esc(x.pergaminhos.tipo)}</span>${x.lido ? '' : '<span class="selo-mini" title="Lacrado: ainda não lido"></span>'}</h3></div>`).join('') : '<p class="dim">Seu baú está vazio.</p>');
+    return `<h2>Baú</h2><p class="dim">Cartas, pergaminhos e pistas que o mestre entregou ao seu personagem.</p>` + (d.length ? d.map(x => `<div class="card cap" onclick="abrirPerg(${x.pergaminhos.id},${x.id})"><h3>${esc(x.pergaminhos.titulo)}<span class="tag">${esc(x.pergaminhos.tipo)}</span>${x.lido ? '' : '<svg class="selo-mini" viewBox="0 0 120 120" aria-label="Lacrado: ainda não lido"><use href="#seloArte"/></svg>'}</h3></div>`).join('') : '<p class="dim">Seu baú está vazio.</p>');
   }
   const d = await q(sb.from('pergaminhos').select('id,titulo,tipo').order('id', { ascending: false })) || [];
   const en = await q(sb.from('pergaminho_entregas').select('pergaminho_id')) || [];
@@ -523,20 +537,20 @@ async function vBau() {
 async function vPergaminho() {
   const r = (await q(sb.from('pergaminhos').select('*').eq('id', bauSel)) || [])[0];
   if (!r) { bauSel = null; return vBau(); }
-  const novo = !!bauEnt, anim = perAnim && (novo || mestre()); perAnim = false;
-  if (bauEnt) { q(sb.from('pergaminho_entregas').update({ lido: true }).eq('id', bauEnt)); bauEnt = null; }
-  const doc = `<div class="perg"><h2>${esc(r.titulo)}</h2><div class="dim">${esc(r.tipo)}</div>${r.imagem ? `<img src="${esc(r.imagem)}" alt="">` : ''}<div class="txt">${esc(r.corpo)}</div></div>`.replace('<div class="perg">', `<div class="perg-wrap">${anim ? '<div class="selo"><i></i><i></i></div>' : ''}<div class="perg${anim ? ' abre' : ''}">`) + '</div>';
+  const fechado = !!bauEnt || (mestre() && perAnim); perAnim = false; perEnt = bauEnt; bauEnt = null;
+  const miolo = `<div class="perg"><h2>${esc(r.titulo)}</h2><div class="dim">${esc(r.tipo)}</div>${r.imagem ? `<img src="${esc(r.imagem)}" alt="">` : ''}<div class="txt">${esc(r.corpo)}</div></div>`;
+  const doc = `<div id="scr" class="scroll${fechado ? '' : ' aberto'}"${fechado ? ' onclick="abrirSelo()"' : ''}><div class="roller"></div><div class="folha">${miolo}</div><div class="roller"></div>${fechado ? SELO_HTML : ''}</div>${fechado ? '<p class="dica">Toque no selo para abrir</p>' : ''}`;
   let painel = '';
   if (mestre()) {
     const js = (await q(sb.from('profiles').select('id,nome,liberado,papel').eq('papel', 'jogador').eq('liberado', true).order('nome')) || []);
     const en = await q(sb.from('pergaminho_entregas').select('user_id,lido').eq('pergaminho_id', bauSel)) || [];
     const m = {}; en.forEach(x => m[x.user_id] = x);
-    painel = `<div class="card"><h3>Entregar</h3>${js.length ? js.map(j => `<label class="chk"><input type="checkbox" class="jg" value="${j.id}"> ${esc(j.nome)}${m[j.id] ? `<span class="tag concluida">${m[j.id].lido ? 'Entregue e lido' : 'Entregue'}</span>` : ''}</label>`).join('') : '<p class="dim">Nenhum jogador liberado ainda.</p>'}<div class="row"><button class="mini pri" onclick="entregarPerg(false)">Entregar aos marcados</button><button class="mini" onclick="entregarPerg(true)">Entregar a todos</button><button class="mini" onclick="recolherPerg()">Recolher dos marcados</button></div></div><div class="row"><button class="mini" onclick="delPerg()">Excluir documento</button></div>`;
+    painel = `<div class="card"><h3>Entregar</h3>${js.length ? js.map(j => `<label class="chk"><input type="checkbox" class="jg" value="${j.id}"> ${esc(j.nome)}${m[j.id] ? `<span class="tag concluida">${m[j.id].lido ? 'Entregue e lido' : 'Entregue'}</span>` : ''}</label>`).join('') : '<p class="dim">Nenhum jogador liberado ainda.</p>'}<div class="row"><button class="mini pri" onclick="entregarPerg(false)">Entregar aos marcados</button><button class="mini" onclick="entregarPerg(true)">Entregar a todos</button><button class="mini" onclick="recolherPerg()">Recolher dos marcados</button></div></div><div class="row"><button class="mini" onclick="perAnim=true;app()">Ver a abertura do pergaminho</button><button class="mini" onclick="delPerg()">Excluir documento</button></div>`;
   }
   return `<div class="leitura"><button class="mini" onclick="abrirPerg(null,null)">← ${mestre() ? 'Documentos' : 'Baú'}</button>${doc}${painel}</div>`;
 }
-let perAnim = false;
-function abrirPerg(i, e) { perAnim = i !== null; bauSel = i; bauEnt = e; app(); window.scrollTo(0, 0); }
+let perAnim = false, perEnt = null;
+function abrirPerg(i, e) { perAnim = false; bauSel = i; bauEnt = e; app(); window.scrollTo(0, 0); }
 async function novoPerg(e) {
   e.preventDefault(); const fm = e.target, f = new FormData(fm), file = f.get('img');
   const inserir = async img => { const r = await q(sb.from('pergaminhos').insert({ titulo: f.get('titulo'), tipo: f.get('tipo'), corpo: f.get('corpo'), imagem: img }).select('id')); if (r && r[0]) bauSel = r[0].id; app(); };
@@ -642,6 +656,37 @@ function capaParallax() {
   el.addEventListener('pointerleave', () => { im.style.setProperty('--ry', '0deg'); im.style.setProperty('--rx', '0deg'); });
 }
 if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+
+const SELO_HTML = `<div class="lacre"><div class="fita-v"></div><svg class="selo-svg" viewBox="0 0 120 120" aria-hidden="true"><g class="meia e" clip-path="url(#cpE)"><use href="#seloArte"/></g><g class="meia d" clip-path="url(#cpD)"><use href="#seloArte"/></g><path class="crack" d="M60 6 L54 26 L66 42 L55 62 L65 82 L57 114" fill="none" stroke="#2a0504" stroke-width="2.4" stroke-linejoin="round" opacity="0"/>${[[60, 20, 3], [54, 40, 2.5], [64, 56, 3.2], [56, 74, 2.6], [62, 92, 3], [58, 104, 2.2], [66, 30, 2], [52, 88, 2.4]].map(f => `<circle class="frag" cx="${f[0]}" cy="${f[1]}" r="${f[2]}" fill="#8f1d1a" opacity="0"/>`).join('')}</svg></div>`;
+const semMovimento = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+function scrollInit() {
+  const sc = $('#scr'); if (!sc || sc.classList.contains('aberto') || sc.dataset.pronto) return; sc.dataset.pronto = '1';
+  if (!window.gsap || semMovimento()) return abrirSelo();
+  gsap.from(sc, { y: 10, opacity: 0, duration: .7, ease: 'power2.out' });
+  gsap.to(sc.querySelector('.selo-svg'), { scale: 1.06, duration: 1.1, yoyo: true, repeat: -1, ease: 'sine.inOut', transformOrigin: '50% 50%' });
+  gsap.to('.dica', { opacity: .35, duration: 1.3, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+}
+function abrirSelo() {
+  const sc = $('#scr'); if (!sc || sc.dataset.abrindo) return; sc.dataset.abrindo = '1';
+  if (perEnt) { q(sb.from('pergaminho_entregas').update({ lido: true }).eq('id', perEnt)); perEnt = null; }
+  const folha = sc.querySelector('.folha'), dica = $('.dica'), miolo = sc.querySelector('.perg');
+  const fim = () => { sc.classList.add('aberto'); folha.style.height = 'auto'; gsap && gsap.set && gsap.set(miolo, { clearProps: 'opacity' }); const l = sc.querySelector('.lacre'); if (l) l.remove(); if (dica) dica.remove(); };
+  if (!window.gsap || semMovimento()) return fim();
+  const e = sc.querySelector('.meia.e'), d = sc.querySelector('.meia.d'), cr = sc.querySelector('.crack'), fr = sc.querySelectorAll('.frag'), fita = sc.querySelector('.fita-v'), selo = sc.querySelector('.selo-svg');
+  gsap.killTweensOf([selo, dica]); gsap.set(selo, { scale: 1 }); gsap.set(miolo, { opacity: 0 });
+  if (dica) gsap.to(dica, { opacity: 0, duration: .3 });
+  gsap.timeline({ onComplete: fim })
+    .to(selo, { scale: 1.12, duration: .18, ease: 'power2.out', transformOrigin: '50% 50%' })
+    .to(selo, { rotation: 4, duration: .06, yoyo: true, repeat: 5, ease: 'none', transformOrigin: '50% 50%' })
+    .set(cr, { opacity: 1 }).set(fr, { opacity: 1 })
+    .to(e, { x: -34, y: 150, rotation: -38, opacity: 0, svgOrigin: '60 60', duration: .85, ease: 'power2.in' })
+    .to(d, { x: 34, y: 175, rotation: 42, opacity: 0, svgOrigin: '60 60', duration: .85, ease: 'power2.in' }, '<')
+    .to(cr, { opacity: 0, duration: .25 }, '<')
+    .to(fr, { x: () => gsap.utils.random(-80, 80), y: () => gsap.utils.random(40, 170), rotation: () => gsap.utils.random(-200, 200), opacity: 0, duration: .85, ease: 'power1.in', stagger: .02 }, '<')
+    .to(fita, { y: 70, opacity: 0, duration: .5, ease: 'power2.in' }, '-=.6')
+    .fromTo(folha, { height: 0 }, { height: 'auto', duration: 1.5, ease: 'power2.inOut' }, '-=.2')
+    .to(miolo, { opacity: 1, duration: .8, ease: 'power1.out' }, '-=.8');
+}
 
 init();
 </script>
